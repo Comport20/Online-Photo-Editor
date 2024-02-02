@@ -7,9 +7,14 @@
     <title>Photo editor</title>
   </head>
   <body>
+    <script defer src="/editorFunction.js"></script>
     <div id="app">
-      <canvas id="canvas-id" class="canvas"></canvas>
-      <input type="file" id="load-input" >
+      <img id="img-id" class="editable-image"/>
+      <label class="label-button" for="load-input">Load image</label>
+      <input class="input-load" type="file" id="load-input" accept="image/*">
+      <div>
+      <input class="slider" type="range" value="100" max="200" min="0">
+    </div>
     </div>
     <script type="module" src="/editorFunction.js"></script>
   </body>
