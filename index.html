@@ -1,21 +1,38 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="/style.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Photo editor</title>
-  </head>
-  <body>
-    <script defer src="/editorFunction.js"></script>
-    <div id="app">
-      <img id="img-id" class="editable-image"/>
-      <label class="label-button" for="load-input">Load image</label>
-      <input class="input-load" type="file" id="load-input" accept="image/*">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="/style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Photo editor</title>
+</head>
+
+<body>
+
+  <div id="app">
+    <img id="img-id" class="editable-image" />
+    <label class="label-button" for="load-input">Load image</label>
+    <input class="input-load" type="file" id="load-input" accept="image/*">
+    <div>
       <div>
-      <input class="slider" type="range" value="100" max="200" min="0">
+        <input type="number" class="range-value-display">
+        <input class="slider" type="range" value="100" max="200" min="0">
+      </div>
+      <div class="filter-button">
+        <button id="0" class="Filter-button" name="brightness"></button>
+        <button id="1" class="Filter-button" name="blur"></button>
+        <button id="2" class="Filter-button" name="contrast"></button>
+        <button id="3" class="Filter-button" name="grayscale"></button>
+        <button id="4" class="Filter-button" name="invert"></button>
+        <button id="5" class="Filter-button" name="opacity"></button>
+        <button id="6" class="Filter-button" name="saturate"></button>
+        <button id="7" class="Filter-button" name="sepia"></button>
+      </div>
+      <button id="reset-id" class="reset-btn"></button>
     </div>
-    </div>
-    <script type="module" src="/editorFunction.js"></script>
-  </body>
+  </div>
+  <script type="module" src="/editorFunction.js"></script>
+</body>
+
 </html>
