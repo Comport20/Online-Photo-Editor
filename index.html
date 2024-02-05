@@ -41,11 +41,20 @@
         <button id="rotate" class="crop-btn">rotate</button>
         <button id="btn-rotate-plus90" class="crop-btn">Повернуть на 90</button>
         <button id="btn-rotate-minus90" class="crop-btn">Повернуть на -90</button>
+        <button id="mirror" class="crop-btn">mirror</button>
+        <button id="flip" class="crop-btn">flip</button>
         <button id="crop-reset-btn" class="crop-btn">crop-reset</button>
+      </div>
+      <div>
+        <label for="resize-width-input">width</label>
+        <label for="resize-height-input">height</label>
+        <input type="number" class="resize" id="resize-width-input">
+        <input type="number" class="resize" id="resize-height-input">
       </div>
     </div>
   </div>
   <script defer src="node_modules/cropperjs/dist/cropper.js"></script>
+  <script defer src="node_modules/fabric/dist/fabric.js"></script>
   <script type="module" src="/editorFunction.js"></script>
 </body>
 
