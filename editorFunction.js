@@ -23,10 +23,11 @@ const filterButton = document.querySelector(".filter-button");
 const rangeValueDisplay = document.querySelector(".range-value-display");
 const slider = document.querySelector(".slider");
 const resetBtn = document.querySelector(".reset-btn") ;
+const ratio = document.querySelector("#ratio");
+const cropMode = document.querySelector("#crop-mode"); 
 let changer;
-
 rangeValueDisplay.value = slider.value;
-
+let copyImg;
 const mapFilter = new Map([
   ["brightness",100],
   ["blurFilter",0],
@@ -36,14 +37,13 @@ const mapFilter = new Map([
   ["opacity",100],
   ["saturate",100],
   ["sepia",0]]);
-
 function applyFilter(){
     img.style.filter = `brightness(${mapFilter.get("brightness")}%) blur(${mapFilter.get("blurFilter")}px)
      contrast(${mapFilter.get("contrast")}%) grayscale(${mapFilter.get("grayscale")}%) 
      invert(${mapFilter.get("invert")}%) opacity(${mapFilter.get("opacity")}%) 
      saturate(${mapFilter.get("saturate")}%) sepia(${mapFilter.get("sepia")}%)`
 }
-
+function transformImage(){}
 imageLoad.addEventListener("change",() =>{
     let file = imageLoad.files[0];
     img.src = URL.createObjectURL(file);
@@ -52,6 +52,7 @@ imageLoad.addEventListener("change",() =>{
         applyFilter();
     });
 });
+
 slider.addEventListener("change", (event) =>{
   rangeValueDisplay.value = event.target.value;
   if(typeof changer !== 'undefined') {
@@ -157,4 +158,59 @@ resetBtn.addEventListener("click", () =>{
   mapFilter.set("saturate",100);
   mapFilter.set("sepia",0);
   applyFilter()
+});
+cropMode.addEventListener("click", () =>{
+  copyImg = new Image();
+  copyImg.src = img.src;
+})
+ratio.addEventListener("click", () =>{
+  const cropper = new Cropper(img,{
+    aspectRatio: 5/4,
+    ready: function () {
+        let newCrop = cropper.getCroppedCanvas().toDataURL();
+        img.src = newCrop;
+        cropper.destroy();
+    } 
+  });
+});
+const makeCrop = document.querySelector("#make-crop")
+const crop = document.querySelector("#crop");
+const rotatePlus90 = document.querySelector("#btn-rotate-plus90");
+const rotateMinus90 = document.querySelector("#btn-rotate-minus90");
+crop.addEventListener("click", () =>{ 
+  let cropper = new Cropper(img,{
+    aspectRatio: 0,
+    viewMode: 2,
+    autoCropArea: 1,
+    ready: () => {
+      makeCrop.addEventListener("click", () =>{
+        if(cropper !== null && cropper !== undefined){
+          img.src = cropper.getCroppedCanvas().toDataURL();
+          cropper.destroy();
+          cropper = null;
+        }
+    })
+    rotatePlus90.addEventListener("click", () => {
+      if(cropper !== null && cropper !== undefined){
+        cropper.rotate(90);
+        img.src = cropper.getCroppedCanvas().toDataURL();
+        cropper.destroy();
+        cropper = null;
+      }
+    });
+    rotateMinus90.addEventListener("click",() => {
+      if(cropper !== null && cropper !== undefined){
+        cropper.rotate(-90);
+        img.src = cropper.getCroppedCanvas().toDataURL();
+        cropper.destroy();
+        cropper = null;
+        }
+    });
+  }});
+});
+
+const cropReset = document.querySelector("#crop-reset-btn");
+cropReset.addEventListener("click", () =>{
+  img.src = copyImg.src;
+  crop.dispatchEvent(new Event("click"))
 });

@@ -2,6 +2,8 @@ input[type="range"] {
   appearance: none;
   background-color: #1ad298f4;
 }
+/* .image-div {
+} */
 .editable-image {
   border: 1px ridge;
   border-radius: 0.3em;
@@ -12,8 +14,8 @@ input[type="range"] {
 .editable-image.load {
   border: 1px ridge;
   border-radius: 0.3em;
-  max-width: 400px;
-  width: 100%;
+  max-width: 100%;
+  width: 400px;
   height: 100%;
   object-fit: cover;
 }

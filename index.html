@@ -6,32 +6,46 @@
   <link rel="stylesheet" href="/style.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Photo editor</title>
+  <link href="node_modules/cropperjs/dist/cropper.css" rel="stylesheet">
 </head>
 
 <body>
 
   <div id="app">
-    <img id="img-id" class="editable-image" />
+    <div class="image-div">
+      <img id="img-id" class="editable-image" />
+    </div>
     <label class="label-button" for="load-input">Load image</label>
     <input class="input-load" type="file" id="load-input" accept="image/*">
+    <button id="reset-id" class="reset-btn"></button>
     <div>
       <div>
         <input type="number" class="range-value-display">
         <input class="slider" type="range" value="100" max="200" min="0">
       </div>
       <div class="filter-button">
-        <button id="0" class="Filter-button" name="brightness"></button>
-        <button id="1" class="Filter-button" name="blur"></button>
-        <button id="2" class="Filter-button" name="contrast"></button>
-        <button id="3" class="Filter-button" name="grayscale"></button>
-        <button id="4" class="Filter-button" name="invert"></button>
-        <button id="5" class="Filter-button" name="opacity"></button>
-        <button id="6" class="Filter-button" name="saturate"></button>
-        <button id="7" class="Filter-button" name="sepia"></button>
+        <button id="0" class="Filter-button" name="brightness">brightness</button>
+        <button id="1" class="Filter-button" name="blur">blur</button>
+        <button id="2" class="Filter-button" name="contrast">contrast</button>
+        <button id="3" class="Filter-button" name="grayscale">grayscale</button>
+        <button id="4" class="Filter-button" name="invert">invert</button>
+        <button id="5" class="Filter-button" name="opacity">opacity</button>
+        <button id="6" class="Filter-button" name="saturate">saturate</button>
+        <button id="7" class="Filter-button" name="sepia">sepia</button>
       </div>
-      <button id="reset-id" class="reset-btn"></button>
+      <div>
+        <button id="crop-mode" class="crop-mode-btn">crop-mode</button>
+        <button id="ratio" class="crop-btn">ratio</button>
+        <button id="crop" class="crop-btn">crop</button>
+        <button id="make-crop" class="crop-btn">make-crop</button>
+        <button id="rotate" class="crop-btn">rotate</button>
+        <button id="btn-rotate-plus90" class="crop-btn">Повернуть на 90</button>
+        <button id="btn-rotate-minus90" class="crop-btn">Повернуть на -90</button>
+        <button id="crop-reset-btn" class="crop-btn">crop-reset</button>
+      </div>
     </div>
   </div>
+  <script defer src="node_modules/cropperjs/dist/cropper.js"></script>
   <script type="module" src="/editorFunction.js"></script>
 </body>
 
