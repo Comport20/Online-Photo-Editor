@@ -2,21 +2,17 @@ input[type="range"] {
   appearance: none;
   background-color: #1ad298f4;
 }
-/* .image-div {
-} */
-.editable-image {
+.canvas-style {
+  max-width: 100%;
   border: 1px ridge;
   border-radius: 0.3em;
-  width: 400px;
-  height: 300px;
-  object-fit: cover;
 }
 .editable-image.load {
+  display: none;
   border: 1px ridge;
   border-radius: 0.3em;
   max-width: 100%;
   width: 400px;
-  height: 100%;
   object-fit: cover;
 }
 .label-button {

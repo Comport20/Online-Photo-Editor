@@ -1,33 +1,35 @@
 const domObjects = {
-img : document.querySelector("#img-id"),
-imageLoad : document.querySelector("#load-input"),
-brightness : document.querySelector("[id='0']"),
-blurFilter : document.querySelector("[id='1']"),
-contrast : document.querySelector("[id='2']"),
-grayscale : document.querySelector("[id='3']"),
-invert : document.querySelector("[id='4']"),
-opacity : document.querySelector("[id='5']"),
-saturate : document.querySelector("[id='6']"),
-sepia : document.querySelector("[id='7']"),
-filterButton : document.querySelector(".filter-button"),
-rangeValueDisplay : document.querySelector(".range-value-display"),
-slider : document.querySelector(".slider"),
-resetBtn : document.querySelector(".reset-btn"),
-ratio : document.querySelector("#ratio"),
-cropMode : document.querySelector("#crop-mode"),
-makeCrop : document.querySelector("#make-crop"),
-crop : document.querySelector("#crop"),
-rotatePlus90 : document.querySelector("#btn-rotate-plus90"),
-rotateMinus90 : document.querySelector("#btn-rotate-minus90"),
-mirror : document.querySelector("#mirror"),
-flip : document.querySelector("#flip"),
-cropReset : document.querySelector("#crop-reset-btn"),
-}
+  img: document.querySelector("#img-id"),
+  imageLoad: document.querySelector("#load-input"),
+  brightness: document.querySelector("[id='0']"),
+  blurFilter: document.querySelector("[id='1']"),
+  contrast: document.querySelector("[id='2']"),
+  grayscale: document.querySelector("[id='3']"),
+  invert: document.querySelector("[id='4']"),
+  opacity: document.querySelector("[id='5']"),
+  saturate: document.querySelector("[id='6']"),
+  sepia: document.querySelector("[id='7']"),
+  filterButton: document.querySelector(".filter-button"),
+  rangeValueDisplay: document.querySelector(".range-value-display"),
+  slider: document.querySelector(".slider"),
+  resetBtn: document.querySelector(".reset-btn"),
+  ratio: document.querySelector("#ratio"),
+  cropMode: document.querySelector("#crop-mode"),
+  makeCrop: document.querySelector("#make-crop"),
+  crop: document.querySelector("#crop"),
+  rotatePlus90: document.querySelector("#btn-rotate-plus90"),
+  rotateMinus90: document.querySelector("#btn-rotate-minus90"),
+  mirror: document.querySelector("#mirror"),
+  flip: document.querySelector("#flip"),
+  cropReset: document.querySelector("#crop-reset-btn"),
+  canvas: document.querySelector(".canvas-style"),
+};
 let changer;
 let backupImage;
-
-(function(){domObjects.rangeValueDisplay.value = domObjects.slider.value;})();
-
+const ctx = domObjects.canvas.getContext("2d");
+(function () {
+  domObjects.rangeValueDisplay.value = domObjects.slider.value;
+})();
 const mapFilter = new Map([
   ["brightness", 100],
   ["blurFilter", 0],
@@ -53,10 +55,18 @@ domObjects.imageLoad.addEventListener("change", () => {
   domObjects.img.src = URL.createObjectURL(file);
   domObjects.img.addEventListener("load", () => {
     domObjects.img.className = "editable-image load";
+    scale = imgScale();
+    ctx.drawImage(domObjects.img, 0, 0, imgWidth * scale, imgHeight * scale);
     applyFilter();
   });
 });
-
+function imgScale() {
+  let imgWidth = domObjects.img.width;
+  let imgHeight = domObjects.img.height;
+  let canvasWidth = domObjects.canvas.width;
+  let canvasHeight = domObjects.canvas.height;
+  return Math.min(canvasWidth / imgWidth, (canvasHeight + 50) / imgHeight);
+}
 domObjects.slider.addEventListener("change", (event) => {
   domObjects.rangeValueDisplay.value = event.target.value;
   if (typeof changer !== "undefined") {
@@ -74,82 +84,68 @@ domObjects.rangeValueDisplay.addEventListener("change", (event) => {
     applyFilter();
   }
 });
-
-domObjects.filterButton.addEventListener("click", (e) => {
-  let id = e.target.id;
-  switch (id) {
-    case domObjects.brightness.id: {
-      let filterName = domObjects.brightness.name;
-      domObjects.slider.min = 0;
-      domObjects.slider.max = 200;
-      domObjects.slider.value = mapFilter.get(filterName);
-      domObjects.rangeValueDisplay.value = domObjects.slider.value;
-      changer = filterChanger(filterName);
-      break;
-    }
-    case domObjects.blurFilter.id: {
-      domObjects.slider.min = 0;
-      domObjects.slider.max = 10;
-      domObjects.slider.value = mapFilter.get("blurFilter");
-      domObjects.rangeValueDisplay.value = domObjects.slider.value;
-      changer = filterChanger("blurFilter");
-      break;
-    }
-    case domObjects.contrast.id: {
-      let filterName = domObjects.contrast.name;
-      domObjects.slider.min = 0;
-      domObjects.slider.max = 200;
-      domObjects.slider.value = mapFilter.get(filterName);
-      domObjects.rangeValueDisplay.value = domObjects.slider.value;
-      changer = filterChanger(filterName);
-      break;
-    }
-    case domObjects.grayscale.id: {
-      let filterName = domObjects.grayscale.name;
-      domObjects.slider.min = 0;
-      domObjects.slider.max = 100;
-      domObjects.slider.value = mapFilter.get(filterName);
-      domObjects.rangeValueDisplay.value = domObjects.slider.value;
-      changer = filterChanger(filterName);
-      break;
-    }
-    case domObjects.invert.id: {
-      let filterName = domObjects.invert.name;
-      domObjects.slider.min = 0;
-      domObjects.slider.max = 100;
-      domObjects.slider.value = mapFilter.get(filterName);
-      domObjects.rangeValueDisplay.value = domObjects.slider.value;
-      changer = filterChanger(filterName);
-      break;
-    }
-    case domObjects.opacity.id: {
-      let filterName = domObjects.opacity.name;
-      domObjects.slider.min = 0;
-      domObjects.slider.max = 100;
-      domObjects.slider.value = mapFilter.get(filterName);
-      domObjects.rangeValueDisplay.value = domObjects.slider.value;
-      changer = filterChanger(filterName);
-      break;
-    }
-    case domObjects.saturate.id: {
-      let filterName = domObjects.saturate.name;
-      domObjects.slider.min = 0;
-      domObjects.slider.max = 200;
-      domObjects.slider.value = mapFilter.get(filterName);
-      domObjects.rangeValueDisplay.value = domObjects.slider.value;
-      changer = filterChanger(filterName);
-      break;
-    }
-    case domObjects.sepia.id: {
-      let filterName = domObjects.sepia.name;
-      domObjects.slider.min = 0;
-      domObjects.slider.max = 100;
-      domObjects.slider.value = mapFilter.get(filterName);
-      domObjects.rangeValueDisplay.value = domObjects.slider.value;
-      changer = filterChanger(filterName);
-      break;
-    }
-  }
+domObjects.brightness.addEventListener("click", () => {
+  let filterName = domObjects.brightness.name;
+  domObjects.slider.min = 0;
+  domObjects.slider.max = 200;
+  domObjects.slider.value = mapFilter.get(filterName);
+  domObjects.rangeValueDisplay.value = domObjects.slider.value;
+  changer = filterChanger(filterName);
+});
+domObjects.blurFilter.addEventListener("click", () => {
+  domObjects.slider.min = 0;
+  domObjects.slider.max = 10;
+  domObjects.slider.value = mapFilter.get("blurFilter");
+  domObjects.rangeValueDisplay.value = domObjects.slider.value;
+  changer = filterChanger("blurFilter");
+});
+domObjects.contrast.addEventListener("click", () => {
+  let filterName = domObjects.contrast.name;
+  domObjects.slider.min = 0;
+  domObjects.slider.max = 200;
+  domObjects.slider.value = mapFilter.get(filterName);
+  domObjects.rangeValueDisplay.value = domObjects.slider.value;
+  changer = filterChanger(filterName);
+});
+domObjects.grayscale.addEventListener("click", () => {
+  let filterName = domObjects.grayscale.name;
+  domObjects.slider.min = 0;
+  domObjects.slider.max = 100;
+  domObjects.slider.value = mapFilter.get(filterName);
+  domObjects.rangeValueDisplay.value = domObjects.slider.value;
+  changer = filterChanger(filterName);
+});
+domObjects.invert.addEventListener("click", () => {
+  let filterName = domObjects.invert.name;
+  domObjects.slider.min = 0;
+  domObjects.slider.max = 100;
+  domObjects.slider.value = mapFilter.get(filterName);
+  domObjects.rangeValueDisplay.value = domObjects.slider.value;
+  changer = filterChanger(filterName);
+});
+domObjects.opacity.addEventListener("click", () => {
+  let filterName = domObjects.opacity.name;
+  domObjects.slider.min = 0;
+  domObjects.slider.max = 100;
+  domObjects.slider.value = mapFilter.get(filterName);
+  domObjects.rangeValueDisplay.value = domObjects.slider.value;
+  changer = filterChanger(filterName);
+});
+domObjects.saturate.addEventListener("click", () => {
+  let filterName = domObjects.saturate.name;
+  domObjects.slider.min = 0;
+  domObjects.slider.max = 200;
+  domObjects.slider.value = mapFilter.get(filterName);
+  domObjects.rangeValueDisplay.value = domObjects.slider.value;
+  changer = filterChanger(filterName);
+});
+domObjects.sepia.addEventListener("click", () => {
+  let filterName = domObjects.sepia.name;
+  domObjects.slider.min = 0;
+  domObjects.slider.max = 100;
+  domObjects.slider.value = mapFilter.get(filterName);
+  domObjects.rangeValueDisplay.value = domObjects.slider.value;
+  changer = filterChanger(filterName);
 });
 const filterChanger = (str) => str;
 domObjects.resetBtn.addEventListener("click", () => {
