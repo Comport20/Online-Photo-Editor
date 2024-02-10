@@ -7,18 +7,14 @@ input[type="range"] {
   border: 1px ridge;
   border-radius: 0.3em;
 }
+.editable-image {
+  display: none;
+  max-width: 100%;
+}
 .image-div {
   max-width: 100%;
   width: 600px;
   height: 460px;
-}
-.editable-image.load {
-  display: none;
-  border: 1px ridge;
-  border-radius: 0.3em;
-  max-width: 100%;
-  width: 400px;
-  object-fit: cover;
 }
 .label-button {
   background-color: #5a9fca;

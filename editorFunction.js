@@ -25,10 +25,9 @@ const domObjects = {
   canvas: document.querySelector(".canvas-style"),
 };
 let changer;
-let backupImage;
+let backupImage = [];
+let activeObjectMap = {};
 const fabricCanvas = new fabric.Canvas(domObjects.canvas);
-let fabricImg;
-let resetSetting;
 (function () {
   domObjects.rangeValueDisplay.value = domObjects.slider.value;
 })();
@@ -133,21 +132,25 @@ function applyFilter(indexFilter) {
 }
 domObjects.imageLoad.addEventListener("change", () => {
   let file = domObjects.imageLoad.files[0];
-  let image = new Image();
-  image.src = URL.createObjectURL(file);
-  image.addEventListener("load", () => {
-    domObjects.img.className = "editable-image load";
-    let scale = imgScale(image.width, image.height);
-    fabricImg = new fabric.Image.fromURL(image.src, function (img) {
-      img.scale(scale);
-      fabricCanvas.add(img);
-      fabricCanvas.setActiveObject(img);
-    });
+  let loadImage = new Image();
+  loadImage.src = URL.createObjectURL(file);
+  loadImage.addEventListener("load", () => {
+    initializeImage(loadImage);
     setTimeout(function () {
       pushFilter(fabricCanvas.getActiveObject());
     }, 500);
   });
 });
+function initializeImage(loadImage) {
+  let scale = imgScale(loadImage.width, loadImage.height);
+  fabric.Image.fromURL(loadImage.src, function (img) {
+    img._element.dataset.imgIdentifier = backupImage.length;
+    backupImage.push(loadImage);
+    img.scale(scale);
+    fabricCanvas.add(img);
+    fabricCanvas.setActiveObject(img);
+  });
+}
 function pushFilter(obj) {
   for (const [key, value] of mapFilter) {
     if (key === "opacity") continue;
@@ -157,9 +160,13 @@ function pushFilter(obj) {
     } else obj.filters.push(value.filter);
   }
 }
+let widthImg;
+let heightImg;
 function imgScale(width, height) {
   let canvasWidth = fabricCanvas.getWidth();
   let canvasHeight = fabricCanvas.getHeight();
+  widthImg = width;
+  heightImg = height;
   return Math.min(canvasWidth / width, (canvasHeight - 50) / height);
 }
 domObjects.slider.addEventListener("change", (event) => {
@@ -283,9 +290,10 @@ function resetMapFilter(obj) {
   }
   obj.applyFilters();
 }
+let bcImg;
 domObjects.cropMode.addEventListener("click", () => {
-  backupImage = new Image();
-  backupImage.src = domObjects.img.src;
+  bcImg = new Image();
+  bcImg.src = domObjects.img.src;
 });
 domObjects.ratio.addEventListener("click", () => {
   const cropper = new Cropper(domObjects.img, {
@@ -297,10 +305,25 @@ domObjects.ratio.addEventListener("click", () => {
     },
   });
 });
-domObjects.crop.addEventListener("click", () => {
-  domObjects.img.src = fabricCanvas.toDataURL({ multiplier: 3 });
-  fabricCanvas.remove(fabricCanvas.getActiveObject());
+function calculateMultScale(obj) {
+  let index = Number(obj._element.dataset.imgIdentifier);
+  let canvasImgWidth = obj.getScaledWidth();
+  let canvasImgHeight = obj.getScaledHeight();
+  return Math.max(
+    backupImage[index].width / canvasImgWidth,
+    backupImage[index].height / canvasImgHeight
+  );
+}
+function convertFabricToCropper() {
+  let obj = fabricCanvas.getActiveObject();
+  let multiplierValue = calculateMultScale(obj);
+  domObjects.img.src = fabricCanvas.toDataURL({ multiplier: multiplierValue });
+  fabricCanvas.remove(obj);
   fabricCanvas.renderAll();
+}
+function convertCropperToFabric() {}
+domObjects.crop.addEventListener("click", () => {
+  convertFabricToCropper();
   let cropper = new Cropper(domObjects.img, {
     aspectRatio: 0,
     viewMode: 2,
@@ -317,7 +340,6 @@ domObjects.crop.addEventListener("click", () => {
             .toDataURL();
           cropper.destroy();
           cropper = null;
-          fabricCanvas.add(new fabric.Image(domObjects.img));
         }
       });
       domObjects.rotatePlus90.addEventListener("click", () => {
