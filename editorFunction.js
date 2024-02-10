@@ -4,11 +4,11 @@ const domObjects = {
   brightness: document.querySelector("[id='0']"),
   blurFilter: document.querySelector("[id='1']"),
   contrast: document.querySelector("[id='2']"),
-  grayscale: document.querySelector("[id='3']"),
-  invert: document.querySelector("[id='4']"),
+  pixelate: document.querySelector("[id='3']"),
+  vibrance: document.querySelector("[id='4']"),
   opacity: document.querySelector("[id='5']"),
   saturate: document.querySelector("[id='6']"),
-  sepia: document.querySelector("[id='7']"),
+  noise: document.querySelector("[id='7']"),
   filterButton: document.querySelector(".filter-button"),
   rangeValueDisplay: document.querySelector(".range-value-display"),
   slider: document.querySelector(".slider"),
@@ -26,100 +26,196 @@ const domObjects = {
 };
 let changer;
 let backupImage;
-const ctx = domObjects.canvas.getContext("2d");
+const fabricCanvas = new fabric.Canvas(domObjects.canvas);
+let fabricImg;
+let resetSetting;
 (function () {
   domObjects.rangeValueDisplay.value = domObjects.slider.value;
 })();
 const mapFilter = new Map([
-  ["brightness", 100],
-  ["blurFilter", 0],
-  ["contrast", 100],
-  ["grayscale", 0],
-  ["invert", 0],
-  ["opacity", 100],
-  ["saturate", 100],
-  ["sepia", 0],
+  [
+    "brightness",
+    {
+      filter: new fabric.Image.filters.Brightness(),
+      value: 0,
+      default: 0,
+    },
+  ],
+  [
+    "blur",
+    {
+      filter: new fabric.Image.filters.Blur(),
+      value: 0,
+      default: 0,
+    },
+  ],
+  [
+    "contrast",
+    {
+      filter: new fabric.Image.filters.Contrast(),
+      value: 0,
+      default: 0,
+    },
+  ],
+  [
+    "pixelate",
+    {
+      filter: new fabric.Image.filters.Pixelate(),
+      value: 1,
+      default: 1,
+    },
+  ],
+  [
+    "vibrance",
+    {
+      filter: new fabric.Image.filters.Vibrance(),
+      value: 0,
+      default: 0,
+    },
+  ],
+  [
+    "opacity",
+    {
+      value: 100,
+      default: 100,
+    },
+  ],
+  [
+    "saturation",
+    {
+      filter: new fabric.Image.filters.Saturation(),
+      value: 0,
+      default: 0,
+    },
+  ],
+  [
+    "noise",
+    {
+      filter: new fabric.Image.filters.Noise(),
+      value: 0,
+      default: 0,
+    },
+  ],
 ]);
-function applyFilter() {
-  domObjects.img.style.filter = `brightness(${mapFilter.get(
-    "brightness"
-  )}%) blur(${mapFilter.get("blurFilter")}px)
-     contrast(${mapFilter.get("contrast")}%) grayscale(${mapFilter.get(
-    "grayscale"
-  )}%) 
-     invert(${mapFilter.get("invert")}%) opacity(${mapFilter.get("opacity")}%) 
-     saturate(${mapFilter.get("saturate")}%) sepia(${mapFilter.get("sepia")}%)`;
+function applyFilter(indexFilter) {
+  let obj = fabricCanvas.getActiveObject();
+  let filterSetting = mapFilter.get(indexFilter).filter;
+  let filterValue = Number(mapFilter.get(indexFilter).value);
+  switch (indexFilter) {
+    case "brightness":
+      filterSetting.brightness = filterValue / 500.0;
+      break;
+    case "blur":
+      filterSetting.blur = filterValue / 100.0;
+      break;
+    case "contrast":
+      filterSetting.contrast = filterValue / 200.0;
+      break;
+    case "pixelate":
+      filterSetting.blocksize = filterValue;
+      break;
+    case "vibrance":
+      filterSetting.vibrance = filterValue / 40;
+      break;
+    case "opacity":
+      obj.opacity = filterValue / 100.0;
+      break;
+    case "saturation":
+      filterSetting.saturation = filterValue / 100.0;
+      break;
+    case "noise": {
+      filterSetting.noise = filterValue;
+      break;
+    }
+  }
+  obj.applyFilters();
+  fabricCanvas.renderAll();
 }
 domObjects.imageLoad.addEventListener("change", () => {
   let file = domObjects.imageLoad.files[0];
-  domObjects.img.src = URL.createObjectURL(file);
-  domObjects.img.addEventListener("load", () => {
+  let image = new Image();
+  image.src = URL.createObjectURL(file);
+  image.addEventListener("load", () => {
     domObjects.img.className = "editable-image load";
-    scale = imgScale();
-    ctx.drawImage(domObjects.img, 0, 0, imgWidth * scale, imgHeight * scale);
-    applyFilter();
+    let scale = imgScale(image.width, image.height);
+    fabricImg = new fabric.Image.fromURL(image.src, function (img) {
+      img.scale(scale);
+      fabricCanvas.add(img);
+      fabricCanvas.setActiveObject(img);
+    });
+    setTimeout(function () {
+      pushFilter(fabricCanvas.getActiveObject());
+    }, 500);
   });
 });
-function imgScale() {
-  let imgWidth = domObjects.img.width;
-  let imgHeight = domObjects.img.height;
-  let canvasWidth = domObjects.canvas.width;
-  let canvasHeight = domObjects.canvas.height;
-  return Math.min(canvasWidth / imgWidth, (canvasHeight + 50) / imgHeight);
+function pushFilter(obj) {
+  for (const [key, value] of mapFilter) {
+    if (key === "opacity") continue;
+    else if (key === "pixelate") {
+      mapFilter.get("pixelate").filter.blocksize = 1;
+      obj.filters.push(mapFilter.get("pixelate").filter);
+    } else obj.filters.push(value.filter);
+  }
+}
+function imgScale(width, height) {
+  let canvasWidth = fabricCanvas.getWidth();
+  let canvasHeight = fabricCanvas.getHeight();
+  return Math.min(canvasWidth / width, (canvasHeight - 50) / height);
 }
 domObjects.slider.addEventListener("change", (event) => {
   domObjects.rangeValueDisplay.value = event.target.value;
-  if (typeof changer !== "undefined") {
-    mapFilter.set(changer, event.target.value);
-    applyFilter();
-  }
+  handlerSilderAndRange(event.target.value);
 });
-
 domObjects.rangeValueDisplay.addEventListener("change", (event) => {
   let rangeValue = Number(event.target.value);
   if (isNaN(rangeValue)) return;
   domObjects.slider.value = event.target.value;
-  if (typeof changer !== "undefined") {
-    mapFilter.set(changer, event.target.value);
-    applyFilter();
-  }
+  handlerSilderAndRange(event.target.value);
 });
+function handlerSilderAndRange(value) {
+  if (typeof changer !== "undefined") {
+    let changeValue = mapFilter.get(changer);
+    changeValue.value = value;
+    mapFilter.set(changer, changeValue);
+    applyFilter(changer);
+  }
+}
 domObjects.brightness.addEventListener("click", () => {
   let filterName = domObjects.brightness.name;
-  domObjects.slider.min = 0;
-  domObjects.slider.max = 200;
-  domObjects.slider.value = mapFilter.get(filterName);
+  domObjects.slider.min = -100;
+  domObjects.slider.max = 100;
+  domObjects.slider.value = mapFilter.get(filterName).value;
   domObjects.rangeValueDisplay.value = domObjects.slider.value;
   changer = filterChanger(filterName);
 });
 domObjects.blurFilter.addEventListener("click", () => {
   domObjects.slider.min = 0;
-  domObjects.slider.max = 10;
-  domObjects.slider.value = mapFilter.get("blurFilter");
+  domObjects.slider.max = 100;
+  domObjects.slider.value = mapFilter.get("blur").value;
   domObjects.rangeValueDisplay.value = domObjects.slider.value;
-  changer = filterChanger("blurFilter");
+  changer = filterChanger("blur");
 });
 domObjects.contrast.addEventListener("click", () => {
   let filterName = domObjects.contrast.name;
-  domObjects.slider.min = 0;
-  domObjects.slider.max = 200;
-  domObjects.slider.value = mapFilter.get(filterName);
+  domObjects.slider.min = -100;
+  domObjects.slider.max = 100;
+  domObjects.slider.value = mapFilter.get(filterName).value;
   domObjects.rangeValueDisplay.value = domObjects.slider.value;
   changer = filterChanger(filterName);
 });
-domObjects.grayscale.addEventListener("click", () => {
-  let filterName = domObjects.grayscale.name;
-  domObjects.slider.min = 0;
-  domObjects.slider.max = 100;
-  domObjects.slider.value = mapFilter.get(filterName);
+domObjects.pixelate.addEventListener("click", () => {
+  let filterName = domObjects.pixelate.name;
+  domObjects.slider.min = 1;
+  domObjects.slider.max = 25;
+  domObjects.slider.value = mapFilter.get(filterName).value;
   domObjects.rangeValueDisplay.value = domObjects.slider.value;
   changer = filterChanger(filterName);
 });
-domObjects.invert.addEventListener("click", () => {
-  let filterName = domObjects.invert.name;
-  domObjects.slider.min = 0;
+domObjects.vibrance.addEventListener("click", () => {
+  let filterName = domObjects.vibrance.name;
+  domObjects.slider.min = -100;
   domObjects.slider.max = 100;
-  domObjects.slider.value = mapFilter.get(filterName);
+  domObjects.slider.value = mapFilter.get(filterName).value;
   domObjects.rangeValueDisplay.value = domObjects.slider.value;
   changer = filterChanger(filterName);
 });
@@ -127,37 +223,66 @@ domObjects.opacity.addEventListener("click", () => {
   let filterName = domObjects.opacity.name;
   domObjects.slider.min = 0;
   domObjects.slider.max = 100;
-  domObjects.slider.value = mapFilter.get(filterName);
+  domObjects.slider.value = mapFilter.get(filterName).value;
   domObjects.rangeValueDisplay.value = domObjects.slider.value;
   changer = filterChanger(filterName);
 });
 domObjects.saturate.addEventListener("click", () => {
   let filterName = domObjects.saturate.name;
-  domObjects.slider.min = 0;
-  domObjects.slider.max = 200;
-  domObjects.slider.value = mapFilter.get(filterName);
+  domObjects.slider.min = -100;
+  domObjects.slider.max = 100;
+  domObjects.slider.value = mapFilter.get(filterName).value;
   domObjects.rangeValueDisplay.value = domObjects.slider.value;
   changer = filterChanger(filterName);
 });
-domObjects.sepia.addEventListener("click", () => {
-  let filterName = domObjects.sepia.name;
+domObjects.noise.addEventListener("click", () => {
+  let filterName = domObjects.noise.name;
   domObjects.slider.min = 0;
   domObjects.slider.max = 100;
-  domObjects.slider.value = mapFilter.get(filterName);
+  domObjects.slider.value = mapFilter.get(filterName).value;
   domObjects.rangeValueDisplay.value = domObjects.slider.value;
   changer = filterChanger(filterName);
 });
 const filterChanger = (str) => str;
 domObjects.resetBtn.addEventListener("click", () => {
-  mapFilter.set("brightness", 100);
-  mapFilter.set("blurFilter", 0);
-  mapFilter.set("grayscale", 0);
-  mapFilter.set("invert", 0);
-  mapFilter.set("opacity", 100);
-  mapFilter.set("saturate", 100);
-  mapFilter.set("sepia", 0);
-  applyFilter();
+  let obj = fabricCanvas.getActiveObject();
+  resetMapFilter(obj);
+  fabricCanvas.renderAll();
 });
+function resetMapFilter(obj) {
+  for (const [key, value] of mapFilter) {
+    let filterSetting = value.filter;
+    value.value = value.default;
+    switch (key) {
+      case "brightness":
+        filterSetting.brightness = value.default;
+        break;
+      case "blur":
+        filterSetting.blur = value.default;
+        break;
+      case "contrast":
+        filterSetting.contrast = value.default;
+        break;
+      case "pixelate":
+        filterSetting.blocksize = value.default;
+        break;
+      case "vibrance":
+        filterSetting.vibrance = value.default;
+        break;
+      case "opacity":
+        obj.opacity = value.default;
+        break;
+      case "saturation":
+        filterSetting.saturation = value.default;
+        break;
+      case "noise": {
+        filterSetting.noise = value.default;
+        break;
+      }
+    }
+  }
+  obj.applyFilters();
+}
 domObjects.cropMode.addEventListener("click", () => {
   backupImage = new Image();
   backupImage.src = domObjects.img.src;
@@ -173,6 +298,9 @@ domObjects.ratio.addEventListener("click", () => {
   });
 });
 domObjects.crop.addEventListener("click", () => {
+  domObjects.img.src = fabricCanvas.toDataURL({ multiplier: 3 });
+  fabricCanvas.remove(fabricCanvas.getActiveObject());
+  fabricCanvas.renderAll();
   let cropper = new Cropper(domObjects.img, {
     aspectRatio: 0,
     viewMode: 2,
@@ -181,9 +309,15 @@ domObjects.crop.addEventListener("click", () => {
       domObjects.makeCrop.addEventListener("click", () => {
         if (cropper !== null && cropper !== undefined) {
           cropper.move(100);
-          domObjects.img.src = cropper.getCroppedCanvas().toDataURL();
+          domObjects.img.src = cropper
+            .getCroppedCanvas({
+              imageSmoothingEnabled: true,
+              imageSmoothingQuality: "high",
+            })
+            .toDataURL();
           cropper.destroy();
           cropper = null;
+          fabricCanvas.add(new fabric.Image(domObjects.img));
         }
       });
       domObjects.rotatePlus90.addEventListener("click", () => {

@@ -7,6 +7,11 @@ input[type="range"] {
   border: 1px ridge;
   border-radius: 0.3em;
 }
+.image-div {
+  max-width: 100%;
+  width: 600px;
+  height: 460px;
+}
 .editable-image.load {
   display: none;
   border: 1px ridge;
