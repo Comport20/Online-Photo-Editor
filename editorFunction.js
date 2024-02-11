@@ -12,11 +12,10 @@ const domObjects = {
   filterButton: document.querySelector(".filter-button"),
   rangeValueDisplay: document.querySelector(".range-value-display"),
   slider: document.querySelector(".slider"),
-  resetBtn: document.querySelector(".reset-btn"),
+  resetBtnFilter: document.querySelector(".reset-filter-btn"),
   ratio: document.querySelector("#ratio"),
-  cropMode: document.querySelector("#crop-mode"),
   makeCrop: document.querySelector("#make-crop"),
-  crop: document.querySelector("#crop"),
+  transform: document.querySelector("#transform"),
   rotatePlus45: document.querySelector("#btn-rotate-plus90"),
   rotateMinus45: document.querySelector("#btn-rotate-minus90"),
   mirror: document.querySelector("#mirror"),
@@ -164,7 +163,7 @@ function pushFilter(obj) {
 function imgScale(width, height) {
   let canvasWidth = fabricCanvas.getWidth();
   let canvasHeight = fabricCanvas.getHeight();
-  return Math.min(canvasWidth / width, (canvasHeight - 50) / height);
+  return Math.min(canvasWidth / width, canvasHeight / height);
 }
 domObjects.slider.addEventListener("change", (event) => {
   domObjects.rangeValueDisplay.value = event.target.value;
@@ -239,7 +238,7 @@ function sliderRangeZerotoPlus100(filterName) {
   domObjects.rangeValueDisplay.value = domObjects.slider.value;
 }
 const filterChanger = (str) => str;
-domObjects.resetBtn.addEventListener("click", () => {
+domObjects.resetBtnFilter.addEventListener("click", () => {
   let obj = fabricCanvas.getActiveObject();
   resetMapFilter(obj);
   fabricCanvas.renderAll();
@@ -278,11 +277,7 @@ function resetMapFilter(obj) {
   }
   obj.applyFilters();
 }
-let bcImg;
-domObjects.cropMode.addEventListener("click", () => {
-  bcImg = new Image();
-  bcImg.src = domObjects.img.src;
-});
+
 domObjects.ratio.addEventListener("click", () => {
   const cropper = new Cropper(domObjects.img, {
     aspectRatio: 5 / 4,
@@ -295,18 +290,19 @@ domObjects.ratio.addEventListener("click", () => {
 });
 function convertFabricToCropper() {
   let obj = fabricCanvas.getActiveObject();
-  let multiplierValue = imgScale(obj.width, obj.height);
-  console.log(obj.width);
-  domObjects.img.src = fabricCanvas.toDataURL({
-    multiplier: 1,
+  domObjects.img.src = obj.toDataURL({
     withoutTransform: true,
   });
+  console.log(domObjects.img.naturalWidth, domObjects.img.naturalHeight);
   fabricCanvas.remove(obj);
   fabricCanvas.renderAll();
+  return obj;
 }
 function convertCropperToFabric() {}
-domObjects.crop.addEventListener("click", () => {
+let backupCropImage;
+domObjects.transform.addEventListener("click", () => {
   convertFabricToCropper();
+  backupCropImage = domObjects.img.src;
   let cropper = new Cropper(domObjects.img, {
     aspectRatio: 0,
     viewMode: 2,
@@ -315,15 +311,15 @@ domObjects.crop.addEventListener("click", () => {
       domObjects.makeCrop.addEventListener("click", () => {
         if (cropper !== null && cropper !== undefined) {
           cropper.move(100);
-          domObjects.img.src = cropper
-            .getCroppedCanvas({
-              imageSmoothingEnabled: true,
-              imageSmoothingQuality: "high",
-            })
-            .toDataURL();
-          console.log(domObjects.img.width);
-          cropper.destroy();
-          cropper = null;
+          // domObjects.img.src = cropper
+          //   .getCroppedCanvas({
+          //     imageSmoothingEnabled: true,
+          //     imageSmoothingQuality: "high",
+          //   })
+          //   .toDataURL();
+          // cropper.destroy();
+          // cropper = null;
+          cropper.crop();
         }
       });
       domObjects.rotatePlus45.addEventListener("click", () => {
@@ -362,6 +358,16 @@ domObjects.crop.addEventListener("click", () => {
   });
 });
 domObjects.cropReset.addEventListener("click", () => {
-  domObjects.img.src = backupImage.src;
-  crop.dispatchEvent(new Event("click"));
+  domObjects.img.src = backupCropImage;
+  domObjects.transform.dispatchEvent(new Event("click"));
+});
+fabricCanvas.on("mouse:wheel", function (opt) {
+  var delta = opt.e.deltaY;
+  var zoom = fabricCanvas.getZoom();
+  zoom *= 0.999 ** delta;
+  if (zoom > 20) zoom = 20;
+  if (zoom < 0.3) zoom = 0.3;
+  fabricCanvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+  opt.e.preventDefault();
+  opt.e.stopPropagation();
 });
