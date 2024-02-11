@@ -17,8 +17,8 @@ const domObjects = {
   cropMode: document.querySelector("#crop-mode"),
   makeCrop: document.querySelector("#make-crop"),
   crop: document.querySelector("#crop"),
-  rotatePlus90: document.querySelector("#btn-rotate-plus90"),
-  rotateMinus90: document.querySelector("#btn-rotate-minus90"),
+  rotatePlus45: document.querySelector("#btn-rotate-plus90"),
+  rotateMinus45: document.querySelector("#btn-rotate-minus90"),
   mirror: document.querySelector("#mirror"),
   flip: document.querySelector("#flip"),
   cropReset: document.querySelector("#crop-reset-btn"),
@@ -130,7 +130,7 @@ function applyFilter(indexFilter) {
   obj.applyFilters();
   fabricCanvas.renderAll();
 }
-domObjects.imageLoad.addEventListener("change", () => {
+domObjects.imageLoad.addEventListener("change", (e) => {
   let file = domObjects.imageLoad.files[0];
   let loadImage = new Image();
   loadImage.src = URL.createObjectURL(file);
@@ -140,6 +140,7 @@ domObjects.imageLoad.addEventListener("change", () => {
       pushFilter(fabricCanvas.getActiveObject());
     }, 500);
   });
+  if (e.target.value) e.target.value = "";
 });
 function initializeImage(loadImage) {
   let scale = imgScale(loadImage.width, loadImage.height);
@@ -160,13 +161,9 @@ function pushFilter(obj) {
     } else obj.filters.push(value.filter);
   }
 }
-let widthImg;
-let heightImg;
 function imgScale(width, height) {
   let canvasWidth = fabricCanvas.getWidth();
   let canvasHeight = fabricCanvas.getHeight();
-  widthImg = width;
-  heightImg = height;
   return Math.min(canvasWidth / width, (canvasHeight - 50) / height);
 }
 domObjects.slider.addEventListener("change", (event) => {
@@ -296,19 +293,14 @@ domObjects.ratio.addEventListener("click", () => {
     },
   });
 });
-function calculateMultScale(obj) {
-  let index = activeObjectMap.get(obj);
-  let canvasImgWidth = obj.getScaledWidth();
-  let canvasImgHeight = obj.getScaledHeight();
-  return Math.max(
-    backupImage[index].width / canvasImgWidth,
-    backupImage[index].height / canvasImgHeight
-  );
-}
 function convertFabricToCropper() {
   let obj = fabricCanvas.getActiveObject();
-  let multiplierValue = calculateMultScale(obj);
-  domObjects.img.src = fabricCanvas.toDataURL({ multiplier: multiplierValue });
+  let multiplierValue = imgScale(obj.width, obj.height);
+  console.log(obj.width);
+  domObjects.img.src = fabricCanvas.toDataURL({
+    multiplier: 1,
+    withoutTransform: true,
+  });
   fabricCanvas.remove(obj);
   fabricCanvas.renderAll();
 }
@@ -329,21 +321,22 @@ domObjects.crop.addEventListener("click", () => {
               imageSmoothingQuality: "high",
             })
             .toDataURL();
+          console.log(domObjects.img.width);
           cropper.destroy();
           cropper = null;
         }
       });
-      domObjects.rotatePlus90.addEventListener("click", () => {
+      domObjects.rotatePlus45.addEventListener("click", () => {
         if (cropper !== null && cropper !== undefined) {
-          cropper.rotate(90);
+          cropper.rotate(45);
           domObjects.img.src = cropper.getCroppedCanvas().toDataURL();
           cropper.destroy();
           cropper = null;
         }
       });
-      domObjects.rotateMinus90.addEventListener("click", () => {
+      domObjects.rotateMinus45.addEventListener("click", () => {
         if (cropper !== null && cropper !== undefined) {
-          cropper.rotate(-90);
+          cropper.rotate(-45);
           domObjects.img.src = cropper.getCroppedCanvas().toDataURL();
           cropper.destroy();
           cropper = null;

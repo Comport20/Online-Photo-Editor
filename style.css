@@ -2,6 +2,10 @@ input[type="range"] {
   appearance: none;
   background-color: #1ad298f4;
 }
+.header {
+  height: 100vh;
+  height: 100svh;
+}
 .canvas-style {
   max-width: 100%;
   border: 1px ridge;
@@ -12,9 +16,8 @@ input[type="range"] {
   max-width: 100%;
 }
 .image-div {
-  max-width: 100%;
   width: 600px;
-  height: 460px;
+  height: 410px;
 }
 .label-button {
   background-color: #5a9fca;
