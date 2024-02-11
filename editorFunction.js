@@ -26,7 +26,7 @@ const domObjects = {
 };
 let changer;
 let backupImage = [];
-let activeObjectMap = {};
+let activeObjectMap = new Map();
 const fabricCanvas = new fabric.Canvas(domObjects.canvas);
 (function () {
   domObjects.rangeValueDisplay.value = domObjects.slider.value;
@@ -144,7 +144,7 @@ domObjects.imageLoad.addEventListener("change", () => {
 function initializeImage(loadImage) {
   let scale = imgScale(loadImage.width, loadImage.height);
   fabric.Image.fromURL(loadImage.src, function (img) {
-    img._element.dataset.imgIdentifier = backupImage.length;
+    activeObjectMap.set(img, backupImage.length);
     backupImage.push(loadImage);
     img.scale(scale);
     fabricCanvas.add(img);
@@ -189,25 +189,16 @@ function handlerSilderAndRange(value) {
 }
 domObjects.brightness.addEventListener("click", () => {
   let filterName = domObjects.brightness.name;
-  domObjects.slider.min = -100;
-  domObjects.slider.max = 100;
-  domObjects.slider.value = mapFilter.get(filterName).value;
-  domObjects.rangeValueDisplay.value = domObjects.slider.value;
+  sliderRangeMinus100toPlus100(filterName);
   changer = filterChanger(filterName);
 });
 domObjects.blurFilter.addEventListener("click", () => {
-  domObjects.slider.min = 0;
-  domObjects.slider.max = 100;
-  domObjects.slider.value = mapFilter.get("blur").value;
-  domObjects.rangeValueDisplay.value = domObjects.slider.value;
+  sliderRangeZerotoPlus100("blur");
   changer = filterChanger("blur");
 });
 domObjects.contrast.addEventListener("click", () => {
   let filterName = domObjects.contrast.name;
-  domObjects.slider.min = -100;
-  domObjects.slider.max = 100;
-  domObjects.slider.value = mapFilter.get(filterName).value;
-  domObjects.rangeValueDisplay.value = domObjects.slider.value;
+  sliderRangeMinus100toPlus100(filterName);
   changer = filterChanger(filterName);
 });
 domObjects.pixelate.addEventListener("click", () => {
@@ -220,36 +211,36 @@ domObjects.pixelate.addEventListener("click", () => {
 });
 domObjects.vibrance.addEventListener("click", () => {
   let filterName = domObjects.vibrance.name;
-  domObjects.slider.min = -100;
-  domObjects.slider.max = 100;
-  domObjects.slider.value = mapFilter.get(filterName).value;
-  domObjects.rangeValueDisplay.value = domObjects.slider.value;
+  sliderRangeMinus100toPlus100(filterName);
   changer = filterChanger(filterName);
 });
 domObjects.opacity.addEventListener("click", () => {
   let filterName = domObjects.opacity.name;
-  domObjects.slider.min = 0;
-  domObjects.slider.max = 100;
-  domObjects.slider.value = mapFilter.get(filterName).value;
-  domObjects.rangeValueDisplay.value = domObjects.slider.value;
+  sliderRangeZerotoPlus100(filterName);
   changer = filterChanger(filterName);
 });
 domObjects.saturate.addEventListener("click", () => {
   let filterName = domObjects.saturate.name;
-  domObjects.slider.min = -100;
-  domObjects.slider.max = 100;
-  domObjects.slider.value = mapFilter.get(filterName).value;
-  domObjects.rangeValueDisplay.value = domObjects.slider.value;
+  sliderRangeMinus100toPlus100(filterName);
   changer = filterChanger(filterName);
 });
 domObjects.noise.addEventListener("click", () => {
   let filterName = domObjects.noise.name;
+  sliderRangeZerotoPlus100(filterName);
+  changer = filterChanger(filterName);
+});
+function sliderRangeMinus100toPlus100(filterName) {
+  domObjects.slider.min = -100;
+  domObjects.slider.max = 100;
+  domObjects.slider.value = mapFilter.get(filterName).value;
+  domObjects.rangeValueDisplay.value = domObjects.slider.value;
+}
+function sliderRangeZerotoPlus100(filterName) {
   domObjects.slider.min = 0;
   domObjects.slider.max = 100;
   domObjects.slider.value = mapFilter.get(filterName).value;
   domObjects.rangeValueDisplay.value = domObjects.slider.value;
-  changer = filterChanger(filterName);
-});
+}
 const filterChanger = (str) => str;
 domObjects.resetBtn.addEventListener("click", () => {
   let obj = fabricCanvas.getActiveObject();
@@ -306,7 +297,7 @@ domObjects.ratio.addEventListener("click", () => {
   });
 });
 function calculateMultScale(obj) {
-  let index = Number(obj._element.dataset.imgIdentifier);
+  let index = activeObjectMap.get(obj);
   let canvasImgWidth = obj.getScaledWidth();
   let canvasImgHeight = obj.getScaledHeight();
   return Math.max(
