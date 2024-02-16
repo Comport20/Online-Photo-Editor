@@ -1,11 +1,11 @@
-import domObjects from "./module/jsObjects/documentObject.js";
-import mapFilter from "./module/jsObjects/mapFilter.js";
-import { applyFilter } from "./module/jsMethod/applyFIlter.js";
+import domObjects from "../../entities/documentObject.js";
+import mapFilter from "../../entities/mapFilter.js";
+import { applyFilter } from "../../Features/applyFIlter.js";
 import {
   sliderRangeMinus100toPlus100,
   sliderRangeZerotoPlus100,
-} from "./module/jsMethod/sliderSetting.js";
-import { resetMapFilter } from "./module/jsMethod/resetFilter.js";
+} from "../../Features/sliderSetting.js";
+import { resetMapFilter } from "../../Features/resetFilter.js";
 let changer;
 let backupImage = [];
 let activeObjectMap = new Map();

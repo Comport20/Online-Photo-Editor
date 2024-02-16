@@ -1,4 +1,4 @@
-import mapFilter from "../jsObjects/mapFilter";
+import mapFilter from "../entities/mapFilter.js";
 export function resetMapFilter(obj) {
   for (const [key, value] of mapFilter) {
     let filterSetting = value.filter;

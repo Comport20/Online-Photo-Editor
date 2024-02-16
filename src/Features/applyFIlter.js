@@ -1,4 +1,4 @@
-import mapFilter from "../jsObjects/mapFilter";
+import mapFilter from "../entities/mapFilter.js";
 export function applyFilter(indexFilter, fabricCanvas) {
   let obj = fabricCanvas.getActiveObject();
   let filterSetting = mapFilter.get(indexFilter).filter;
