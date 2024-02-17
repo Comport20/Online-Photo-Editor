@@ -73,7 +73,7 @@ input[type="range"]::-webkit-slider-runnable-track {
   border: 1px ridge;
 }
 .image-div {
-  max-width: 774px;
+  width: 774px;
   height: 439px;
   position: absolute;
 }
@@ -92,6 +92,7 @@ input[type="range"]::-webkit-slider-runnable-track {
   background-color: white;
 }
 .slider-area {
+  cursor: pointer;
   margin-top: 31px;
   max-width: 774px;
   display: flex;

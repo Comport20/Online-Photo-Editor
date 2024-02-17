@@ -28,6 +28,7 @@ function initializeImage(loadImage) {
     activeObjectMap.set(img, backupImage.length);
     backupImage.push(loadImage);
     img.scale(scale);
+    fabricCanvas.centerObject(img);
     fabricCanvas.add(img);
     fabricCanvas.setActiveObject(img);
   });
@@ -49,7 +50,7 @@ function imgScale(width, height) {
   let canvasHeight = fabricCanvas.getHeight();
   return Math.min(canvasWidth / width, canvasHeight / height);
 }
-domObjects.slider.addEventListener("change", (event) => {
+domObjects.slider.addEventListener("input", (event) => {
   domObjects.rangeValueDisplay.value = event.target.value;
   handlerSilderAndRange(event.target.value);
 });
@@ -135,12 +136,14 @@ function convertFabricToCropper() {
   fabricCanvas.remove(obj);
   fabricCanvas.renderAll();
   convertorFlag = checkStage(false);
+  domObjects.cropperDiv.style.zIndex = 1;
   return obj;
 }
 function universalConditionalForFabricTransform() {
   if (!convertorFlag) convertCropperToFabric();
 }
 function convertCropperToFabric() {
+  domObjects.cropperDiv.style.zIndex = -1;
   initializeImage(domObjects.img);
   domObjects.img.src = "";
   convertorFlag = checkStage(true);

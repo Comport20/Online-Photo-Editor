@@ -23,5 +23,6 @@ const domObjects = {
   cropReset: document.querySelector("#crop-reset-btn"),
   canvas: document.querySelector(".canvas-style"),
   fineTuning: document.querySelector("#fine-tuning"),
+  cropperDiv: document.querySelector(".image-div"),
 };
 export default domObjects;
