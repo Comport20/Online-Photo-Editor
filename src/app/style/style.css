@@ -63,7 +63,6 @@ input[type="range"]::-webkit-slider-runnable-track {
   flex-wrap: wrap;
 }
 .canvas-area {
-  /* margin: 0 76px 0 95px; */
   display: flex;
   flex-flow: column wrap;
   align-items: center;
@@ -83,6 +82,7 @@ input[type="range"]::-webkit-slider-runnable-track {
   position: relative;
   display: flex;
   min-width: 774px;
+  justify-content: space-between;
 }
 .editable-image {
   display: none;
@@ -105,8 +105,22 @@ input[type="range"]::-webkit-slider-runnable-track {
 .slider {
   position: relative;
 }
-.label-button {
+.flex-left-side-canvas-nav {
+  display: flex;
+  gap: 10px;
+}
+.flex-right-side-canvas-nav {
+  display: flex;
+  gap: 10px;
+}
+.flex-middle-side-canvas-nav {
+  display: flex;
+  gap: 10px;
+}
+.canvas-interaction-button {
   background-color: #fff;
+  font-size: 14px;
+  box-sizing: border-box;
   width: 77px;
   height: 22px;
   transition: 0.2s;
@@ -114,7 +128,26 @@ input[type="range"]::-webkit-slider-runnable-track {
   border: 1.5px solid rgba(0, 0, 0, 1);
   text-align: center;
 }
-.label-button:hover {
+.canvas-interaction-button span {
+  display: block;
+  width: 54px;
+}
+.canvas-interaction-button-svg {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #fff;
+  font-size: 14px;
+  width: 43px;
+  height: 22px;
+  transition: 0.2s;
+  padding: 0 13px 0 13px;
+  border: 1.5px solid rgba(0, 0, 0, 1);
+  text-align: center;
+}
+.canvas-interaction-button-svg:last-child {
+  width: 27.5px;
+}
+.canvas-interaction-button:hover {
   background-color: #63bdea;
 }
 .input-load {
@@ -153,11 +186,33 @@ input[type="range"]::-webkit-slider-runnable-track {
 .resize {
   background-image: url(../../assets/icon/resize.svg);
 }
+.ai-tools {
+  background-image: url(../../assets/icon/ai-tools.svg);
+}
 .menu-btn-label {
   position: absolute;
   top: 36px;
 }
 .menu-btn:hover {
-  border: 2px solid;
-  border-color: rgba(20, 0, 255, 0.2);
+  border: 1px solid rgba(147, 54, 240, 0.3);
+}
+.ai-tools-side {
+  width: 97px;
+  display: flex;
+  flex-direction: column;
+}
+.back {
+  background-image: url(../../assets/icon/back-arrow.svg);
+}
+.next {
+  background-image: url(../../assets/icon/next-arrow.svg);
+}
+.list-of-changes {
+  background-image: url(../../assets/icon/list.svg);
+}
+.traget-rest {
+  transition: 0.2s;
+}
+.traget-rest:hover {
+  background-color: rgba(255, 68, 68, 0.7);
 }

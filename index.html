@@ -31,8 +31,23 @@
           <input class="slider" type="range" value="0" max="100" min="-100">
         </div>
         <div class="canvas-interaction">
-          <label class="label-button" for="load-input">Load</label>
-          <input class="input-load" type="file" id="load-input" accept="image/*">
+          <div class="flex-left-side-canvas-nav">
+            <label id="file-id" class="canvas-interaction-button">File</label>
+            <label class="canvas-interaction-button" for="load-input">Load</label>
+            <input class="input-load" type="file" id="load-input" accept="image/*" hi>
+            <label class="canvas-interaction-button"><a id="download-id">Save</a></label>
+          </div>
+          <div class="flex-middle-side-canvas-nav">
+            <button id="back-id" class="canvas-interaction-button-svg back"></button>
+            <button id="next-id" class="canvas-interaction-button-svg next"></button>
+            <button id="list-of-changes" class="canvas-interaction-button-svg list-of-changes"></button>
+          </div>
+          <div class="flex-right-side-canvas-nav">
+            <label id="traget-rest-id" class="canvas-interaction-button traget-rest">Reset</label>
+            <label id="reset-all-id" class="canvas-interaction-button traget-rest" value="label">
+              <span>Reset all</span>
+            </label>
+          </div>
         </div>
       </div>
       <aside class="editor-menu">
@@ -50,6 +65,11 @@
         </button>
         <button id="resize" class="menu-btn resize">
           <label for="resize" class="menu-btn-label">Resize</label>
+        </button>
+      </aside>
+      <aside class="ai-tools-side">
+        <button id="ai-tools" class="menu-btn ai-tools">
+          <label for="ai-tools" class="menu-btn-label">AI-tools</label>
         </button>
       </aside>
       <div class="filter-button">
