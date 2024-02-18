@@ -166,7 +166,7 @@ input[type="range"]::-webkit-slider-runnable-track {
   background-color: inherit;
   background-repeat: no-repeat;
   background-position: top;
-  width: 97px;
+  min-width: 97px;
   height: 53px;
   font-size: 16px;
   position: relative;
@@ -220,13 +220,20 @@ input[type="range"]::-webkit-slider-runnable-track {
   background-color: rgba(255, 68, 68, 0.7);
 }
 .filter-button {
-  height: 64px;
-  flex: 1 700px;
-  display: flex;
-  justify-content: center;
-}
-.filter-area {
   width: 774px;
-  height: inherit;
+  height: 64px;
   display: flex;
+  align-items: center;
+  gap: 16px;
+  overflow: auto;
+  background-color: #ffaeae;
+  border-radius: 10px;
+}
+.Filter-button {
+  display: inline-block;
+  color: #fff;
+  background-color: #5f5c8a;
+  min-width: 90px;
+  min-height: 25px;
+  border-radius: 13px;
 }
