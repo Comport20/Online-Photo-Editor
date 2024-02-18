@@ -155,6 +155,7 @@ input[type="range"]::-webkit-slider-runnable-track {
   display: none;
 }
 .editor-menu {
+  margin-left: 2px;
   width: 98px;
   display: flex;
   flex-direction: column;
@@ -166,7 +167,7 @@ input[type="range"]::-webkit-slider-runnable-track {
   background-repeat: no-repeat;
   background-position: top;
   width: 97px;
-  height: 65px;
+  height: 53px;
   font-size: 16px;
   position: relative;
   display: flex;
@@ -198,6 +199,7 @@ input[type="range"]::-webkit-slider-runnable-track {
   border: 1px solid rgba(147, 54, 240, 0.3);
 }
 .ai-tools-side {
+  margin-right: 10px;
   width: 97px;
   display: flex;
   flex-direction: column;
@@ -216,4 +218,15 @@ input[type="range"]::-webkit-slider-runnable-track {
 }
 .traget-rest:hover {
   background-color: rgba(255, 68, 68, 0.7);
+}
+.filter-button {
+  height: 64px;
+  flex: 1 700px;
+  display: flex;
+  justify-content: center;
+}
+.filter-area {
+  width: 774px;
+  height: inherit;
+  display: flex;
 }
