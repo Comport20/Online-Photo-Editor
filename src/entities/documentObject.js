@@ -15,7 +15,6 @@ const domObjects = {
   resetBtnFilter: document.querySelector(".reset-filter-btn"),
   ratio: document.querySelector("#ratio"),
   makeCrop: document.querySelector("#make-crop"),
-  transform: document.querySelector("#transform"),
   rotatePlus45: document.querySelector("#btn-rotate-plus90"),
   rotateMinus45: document.querySelector("#btn-rotate-minus90"),
   mirror: document.querySelector("#mirror"),
@@ -23,6 +22,10 @@ const domObjects = {
   cropReset: document.querySelector("#crop-reset-btn"),
   canvas: document.querySelector(".canvas-style"),
   fineTuning: document.querySelector("#fine-tuning"),
+  transform: document.querySelector("#transform"),
+  filter: document.querySelector("#filter"),
+  text: document.querySelector("#text"),
+  resize: document.querySelector("#resize"),
   cropperDiv: document.querySelector(".image-div"),
 };
 export default domObjects;

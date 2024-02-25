@@ -2,6 +2,13 @@
 body {
   background-color: #f8f8ff;
 }
+a:hover,
+a:active,
+a {
+  cursor: inherit;
+  text-decoration: none;
+  color: rgb(0, 0, 0);
+}
 .app {
   height: 100vh;
   height: 100svh;
@@ -61,6 +68,7 @@ input[type="range"]::-webkit-slider-runnable-track {
   margin-top: 47px;
   display: flex;
   flex-wrap: wrap;
+  flex: 1;
 }
 .canvas-area {
   display: flex;
@@ -76,9 +84,9 @@ input[type="range"]::-webkit-slider-runnable-track {
   width: 774px;
   height: 439px;
   position: absolute;
+  top: 23px;
 }
 .canvas-interaction {
-  bottom: calc(485px + 23.5px);
   position: relative;
   display: flex;
   min-width: 774px;
@@ -226,8 +234,26 @@ input[type="range"]::-webkit-slider-runnable-track {
   align-items: center;
   gap: 16px;
   overflow: auto;
-  background-color: #ffaeae;
   border-radius: 10px;
+  margin-bottom: 10px;
+}
+.cropper-button {
+  width: 774px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  overflow: auto;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+.crop-btn {
+  display: inline-block;
+  color: #fff;
+  background-color: #5f5c8a;
+  min-width: 90px;
+  min-height: 25px;
+  border-radius: 13px;
 }
 .Filter-button {
   display: inline-block;
@@ -236,4 +262,109 @@ input[type="range"]::-webkit-slider-runnable-track {
   min-width: 90px;
   min-height: 25px;
   border-radius: 13px;
+}
+.resize-button {
+  margin-top: 46px;
+  padding-bottom: 46px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}
+.preset-filter-div {
+  margin-top: 46px;
+  width: 774px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  overflow: auto;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+.preset-filter-btn {
+  appearance: none;
+}
+.preset-filter-label {
+  user-select: none;
+  min-width: 90px;
+  text-align: center;
+  display: inline-block;
+  color: #fff;
+  background-color: #5f5c8a;
+  min-height: 25px;
+  max-height: 40px;
+  border-radius: 13px;
+  transition: 0.2s;
+}
+.preset-filter-btn:checked + .preset-filter-label {
+  background-color: rgba(255, 68, 68, 0.7);
+  color: black;
+}
+.text-func-div {
+  margin-top: 46px;
+  margin-bottom: 10px;
+  width: 774px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border-radius: 10px;
+}
+.drop-text-area {
+  position: relative;
+}
+.text-filed-btn-div {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: end;
+  left: -45px;
+  bottom: 30px;
+  visibility: hidden;
+  opacity: 0;
+  transition: 0.3s;
+}
+.text-func-btn {
+  display: inline-block;
+  min-width: 90px;
+  max-width: 90px;
+  height: 25px;
+  color: #fff;
+  background-color: #5f5c8a;
+  border-radius: 13px;
+  transition: 0.2s;
+}
+.add-text-func-btn {
+  display: inline-block;
+  min-width: 90px;
+  max-width: 90px;
+  height: 25px;
+  color: #fff;
+  background-color: #5f5c8a;
+  border-radius: 13px;
+  transition: 0.2s;
+}
+.input-text-field {
+  width: 180px;
+  resize: none;
+}
+.arrow {
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  transform: rotate(45deg);
+  transition: 0.3s;
+}
+.show {
+  visibility: visible;
+  opacity: 1;
+}
+.up {
+  transform: rotate(-135deg);
+}
+.deactivate {
+  display: none;
 }

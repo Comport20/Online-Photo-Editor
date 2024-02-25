@@ -6,6 +6,15 @@ import {
   sliderRangeZerotoPlus100,
 } from "../../Features/sliderSetting.js";
 import { resetMapFilter } from "../../Features/resetFilter.js";
+import {
+  toggleFlagVisibleSlider,
+  toggleFlagHiddenSlider,
+} from "../../Features/toggleFlag.js";
+const divScroll = document.querySelector(".filter-button");
+divScroll.addEventListener("wheel", (e) => {
+  e.preventDefault();
+  divScroll.scrollLeft += e.deltaY * 0.4;
+});
 let changer;
 let backupImage = [];
 let activeObjectMap = new Map();
@@ -126,7 +135,6 @@ domObjects.ratio.addEventListener("click", () => {
     },
   });
 });
-let convertorFlag = true;
 function convertFabricToCropper() {
   let obj = fabricCanvas.getActiveObject();
   domObjects.img.src = obj.toDataURL({
@@ -135,23 +143,29 @@ function convertFabricToCropper() {
   console.log(domObjects.img.naturalWidth, domObjects.img.naturalHeight);
   fabricCanvas.remove(obj);
   fabricCanvas.renderAll();
-  convertorFlag = checkStage(false);
+  converterFlag = false;
   domObjects.cropperDiv.style.zIndex = 1;
   return obj;
 }
 function universalConditionalForFabricTransform() {
-  if (!convertorFlag) convertCropperToFabric();
+  if (!converterFlag) convertCropperToFabric();
 }
 function convertCropperToFabric() {
   domObjects.cropperDiv.style.zIndex = -1;
+  converterFlag = true;
   initializeImage(domObjects.img);
   domObjects.img.src = "";
-  convertorFlag = checkStage(true);
+  cropper = null;
 }
+let converterFlag = true;
 let backupCropImage;
 domObjects.transform.addEventListener("click", () => {
-  if (convertorFlag) convertFabricToCropper();
-  backupCropImage = domObjects.img.src;
+  toggleFlagVisibleSlider(sliderArea, cropperButtons, "cropper-button");
+  scrollToNewItem(cropperButtons);
+  if (converterFlag) {
+    convertFabricToCropper();
+    backupCropImage = domObjects.img.src;
+  }
   let cropper = new Cropper(domObjects.img, {
     aspectRatio: 0,
     viewMode: 2,
@@ -168,6 +182,7 @@ domObjects.transform.addEventListener("click", () => {
             .toDataURL();
           cropper.destroy();
           cropper = null;
+          domObjects.transform.dispatchEvent(new Event("click"));
         }
       });
       domObjects.rotatePlus45.addEventListener("click", () => {
@@ -176,6 +191,7 @@ domObjects.transform.addEventListener("click", () => {
           domObjects.img.src = cropper.getCroppedCanvas().toDataURL();
           cropper.destroy();
           cropper = null;
+          domObjects.transform.dispatchEvent(new Event("click"));
         }
       });
       domObjects.rotateMinus45.addEventListener("click", () => {
@@ -184,6 +200,7 @@ domObjects.transform.addEventListener("click", () => {
           domObjects.img.src = cropper.getCroppedCanvas().toDataURL();
           cropper.destroy();
           cropper = null;
+          domObjects.transform.dispatchEvent(new Event("click"));
         }
       });
       domObjects.flip.addEventListener("click", () => {
@@ -192,6 +209,7 @@ domObjects.transform.addEventListener("click", () => {
           domObjects.img.src = cropper.getCroppedCanvas().toDataURL();
           cropper.destroy();
           cropper = null;
+          domObjects.transform.dispatchEvent(new Event("click"));
         }
       });
       domObjects.mirror.addEventListener("click", () => {
@@ -200,18 +218,22 @@ domObjects.transform.addEventListener("click", () => {
           domObjects.img.src = cropper.getCroppedCanvas().toDataURL();
           cropper.destroy();
           cropper = null;
+          domObjects.transform.dispatchEvent(new Event("click"));
         }
+      });
+      domObjects.cropReset.addEventListener("click", () => {
+        domObjects.img.src = backupCropImage;
+        cropper.destroy();
+        cropper = null;
+        domObjects.transform.dispatchEvent(new Event("click"));
       });
     },
   });
 });
-domObjects.cropReset.addEventListener("click", () => {
-  domObjects.img.src = backupCropImage;
-  domObjects.transform.dispatchEvent(new Event("click"));
-});
+
 fabricCanvas.on("mouse:wheel", function (opt) {
-  var delta = opt.e.deltaY;
-  var zoom = fabricCanvas.getZoom();
+  let delta = opt.e.deltaY;
+  let zoom = fabricCanvas.getZoom();
   zoom *= 0.999 ** delta;
   if (zoom > 20) zoom = 20;
   if (zoom < 0.3) zoom = 0.3;
@@ -219,7 +241,113 @@ fabricCanvas.on("mouse:wheel", function (opt) {
   opt.e.preventDefault();
   opt.e.stopPropagation();
 });
-let checkStage = (boolValue) => boolValue;
 domObjects.fineTuning.addEventListener("click", () => {
+  toggleFlagVisibleSlider(sliderArea, filterButtons, "filter-button");
+  scrollToNewItem(filterButtons);
   universalConditionalForFabricTransform();
 });
+domObjects.filter.addEventListener("click", () => {
+  toggleFlagHiddenSlider(sliderArea, presetFilterButtons, "preset-filter-div");
+  scrollToNewItem(presetFilterButtons);
+  universalConditionalForFabricTransform();
+});
+domObjects.text.addEventListener("click", () => {
+  toggleFlagHiddenSlider(sliderArea, textButtons, "text-func-div");
+  scrollToNewItem(textButtons);
+  universalConditionalForFabricTransform();
+});
+domObjects.resize.addEventListener("click", () => {
+  toggleFlagHiddenSlider(sliderArea, resizeButtons, "resize-button");
+  scrollToNewItem(resizeButtons);
+  universalConditionalForFabricTransform();
+});
+const filterButtons = document.querySelector(".filter-button");
+const cropperButtons = document.querySelector(".cropper-button");
+const resizeButtons = document.querySelector(".resize-button");
+const presetFilterButtons = document.querySelector(".preset-filter-div");
+const textButtons = document.querySelector(".text-func-div");
+const sliderArea = document.querySelector(".slider-area");
+function scrollToNewItem(divBlock) {
+  divBlock.scrollIntoView({ behavior: "smooth" });
+}
+let counter = 10;
+const presetFilters = document.querySelectorAll(".preset-filter-btn");
+let arrayValue = new Map();
+for (const elem of presetFilters) {
+  elem.addEventListener("change", (e) => {
+    let activObj = fabricCanvas.getActiveObject();
+    if (e.target.checked) {
+      let filterCreater = new Function(
+        `return new fabric.Image.filters.${e.target.dataset.filterName}();`
+      );
+      let filtersSetting = filterCreater();
+      if (arrayValue.has(e.target.dataset.filterName)) {
+        activObj.filters[arrayValue.get(e.target.dataset.filterName)] =
+          filtersSetting;
+      } else {
+        arrayValue.set(e.target.dataset.filterName, counter);
+        activObj.filters[counter++] = filtersSetting;
+      }
+      activObj.applyFilters();
+      fabricCanvas.renderAll();
+    } else {
+      activObj.filters.splice(arrayValue.get(e.target.dataset.filterName), 1);
+      activObj.applyFilters();
+      fabricCanvas.renderAll();
+    }
+  });
+}
+let fabricText;
+const textButtonsFunc = document.querySelectorAll(".text-func-btn");
+const textDropMenu = document.querySelector("#text-drop-menu-btn");
+const emojiDropMenu = document.querySelector("#emoji-drop-menu-btn");
+const figureDropMenu = document.querySelector("#figure-drop-menu-btn");
+const addTextBtn = document.querySelector("#add-text-btn");
+const textArea = document.querySelector(".text-filed-btn-div");
+const arrowCursor = document.querySelectorAll(".arrow");
+addTextBtn.addEventListener("click", () => {
+  const textField = document.querySelector("#input-text-field-id");
+  fabricText = new fabric.Text(textField.value, {});
+  fabricCanvas.centerObject(fabricText);
+  fabricCanvas.add(fabricText);
+});
+textDropMenu.addEventListener("click", () => {
+  textArea.classList.toggle("show");
+  arrowCursor[0].classList.toggle("up");
+});
+emojiDropMenu.addEventListener("click", () => {
+  arrowCursor[1].classList.toggle("up");
+});
+figureDropMenu.addEventListener("click", () => {
+  arrowCursor[2].classList.toggle("up");
+});
+document.addEventListener("keyup", (e) => {
+  try {
+    if (e.code === "Backspace") {
+      let backspaceKeyPressed = fabricCanvas.getActiveObject();
+      fabricCanvas.remove(backspaceKeyPressed);
+      fabricCanvas.renderAll();
+    }
+  } catch (err) {
+    console.log(err);
+  }
+});
+const downloadImage = document.querySelector("#download-id");
+downloadImage.addEventListener("click", (e) => {
+  e.target.href = fabricCanvas.getActiveObject().toDataURL({
+    withoutTransform: true,
+  });
+  e.target.download = "output.png";
+});
+/* {
+    "smileys": ["😀","😃","😄","😁","😆","😅","😂","🤣","🥲","🥹","😊","😇",
+    "🙂","🙃","😉","😌","😍","🥰","😘","😗","😙","😚","😋","😛","😝","😜","🤪",
+    "🤨","🧐","🤓","😎","🥸","🤩","🥳","😏","😒","😞","😔","😟","😕","🙁","☹️",
+    "😣","😖","😫","😩","🥺","😢","😭","😮‍💨","😤","😠","😡","🤬","🤯","😳","🥵",
+    "🥶","😱","😨","😰","😥","😓","🫣","🤗","🫡","🤔","🫢","🤭","🤫","🤥","😶",
+    "😶‍🌫️","😐","😑","😬","🫨","🫠","🙄","😯","😦","😧","😮","😲","🥱","😴","🤤",
+    "😪","😵","😵‍💫","🫥","🤐","🥴","🤢","🤮","🤧","😷","🤒","🤕","🤑","🤠","😈",
+    "👿","👹","👺","🤡","💩","👻","💀","☠️","👽","👾","🤖","🎃","😺","😸","😹",
+    "😻","😼","😽","🙀","😿","😾"],
+    "hearts": ["🩷","🧡","💛","💚","💙","🩵","💜","🖤","🩶","🤍","🤎","❤️‍🔥","❤️‍🩹",
+    "💔","💕","💞","💓","💗","💖","💘","💝"]}*/

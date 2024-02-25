@@ -22,20 +22,12 @@
     </header>
     <main class="main-bar">
       <div class="canvas-area">
-        <div class="image-div">
-          <img id="img-id" class="editable-image" />
-        </div>
-        <canvas id="canvas-id" class="canvas-style" width="774px" height="439px"></canvas>
-        <div class="slider-area">
-          <input type="number" class="range-value-display">
-          <input class="slider" type="range" value="0" max="100" min="-100">
-        </div>
         <div class="canvas-interaction">
           <div class="flex-left-side-canvas-nav">
             <label id="file-id" class="canvas-interaction-button">File</label>
             <label class="canvas-interaction-button" for="load-input">Load</label>
             <input class="input-load" type="file" id="load-input" accept="image/*" hi>
-            <label class="canvas-interaction-button"><a id="download-id">Save</a></label>
+            <a id="download-id" class="canvas-interaction-button">Save</a>
           </div>
           <div class="flex-middle-side-canvas-nav">
             <button id="back-id" class="canvas-interaction-button-svg back"></button>
@@ -49,7 +41,21 @@
             </label>
           </div>
         </div>
-        <div class="filter-button">
+        <div class="image-div">
+          <img id="img-id" class="editable-image" />
+        </div>
+        <canvas id="canvas-id" class="canvas-style" width="774px" height="439px"></canvas>
+        <div class="slider-area">
+          <input type="number" class="range-value-display">
+          <input class="slider" type="range" value="0" max="100" min="-100">
+        </div>
+        <div class="resize-button deactivate">
+          <label for="resize-width-input">W:</label>
+          <input type="number" class="resize-input" id="resize-width-input">
+          <label for="resize-height-input">H:</label>
+          <input type="number" class="resize-input" id="resize-height-input">
+        </div>
+        <div class="filter-button deactivate">
           <button id="0" class="Filter-button" name="brightness">brightness</button>
           <button id="1" class="Filter-button" name="blur">blur</button>
           <button id="2" class="Filter-button" name="contrast">contrast</button>
@@ -59,6 +65,69 @@
           <button id="6" class="Filter-button" name="saturation">saturate</button>
           <button id="7" class="Filter-button" name="noise">noise</button>
           <button id="reset-id" class="Filter-button reset-filter-btn">reset filter</button>
+        </div>
+        <div class="cropper-button deactivate">
+          <button id="ratio" class="crop-btn">ratio</button>
+          <button id="make-crop" class="crop-btn">make-crop</button>
+          <button id="rotate" class="crop-btn">rotate</button>
+          <button id="btn-rotate-plus90" class="crop-btn">Повернуть на 45</button>
+          <button id="btn-rotate-minus90" class="crop-btn">Повернуть на -45</button>
+          <button id="mirror" class="crop-btn">mirror</button>
+          <button id="flip" class="crop-btn">flip</button>
+          <button id="crop-reset-btn" class="crop-btn">crop-reset</button>
+        </div>
+        <div class="preset-filter-div deactivate">
+          <input data-filter-name="Grayscale" id="grayscale" type="checkbox" class="preset-filter-btn">
+          <label for="grayscale" class="preset-filter-label">grayscale</label>
+
+          <input data-filter-name="Invert" id="invert" type="checkbox" class="preset-filter-btn">
+          <label for="invert" class="preset-filter-label">Invert</label>
+
+          <input data-filter-name="Sepia" id="sepia" type="checkbox" class="preset-filter-btn">
+          <label for="sepia" class="preset-filter-label">sepia</label>
+
+          <input data-filter-name="BlackWhite" id="black-and-white" type="checkbox" class="preset-filter-btn">
+          <label for="black-and-white" class="preset-filter-label">black and white</label>
+
+          <input data-filter-name="Brownie" id="brownie" type="checkbox" class="preset-filter-btn">
+          <label for="brownie" class="preset-filter-label">brownie</label>
+
+          <input data-filter-name="Kodachrome" id="kodachrome" type="checkbox" class="preset-filter-btn">
+          <label for="kodachrome" class="preset-filter-label">kodachrome</label>
+
+          <input data-filter-name="Vintage" id="vintage" type="checkbox" class="preset-filter-btn">
+          <label for="vintage" class="preset-filter-label">vintage</label>
+
+          <input data-filter-name="Technicolor" id="technicolor" type="checkbox" class="preset-filter-btn">
+          <label for="technicolor" class="preset-filter-label">Technicolor</label>
+
+          <input data-filter-name="Polaroid" id="polaroid" type="checkbox" class="preset-filter-btn">
+          <label for="polaroid" class="preset-filter-label">Polaroid</label>
+        </div>
+        <div class="text-func-div deactivate">
+          <div class="drop-text-area">
+            <button id="text-drop-menu-btn" class="text-func-btn">Текст
+              <i class="arrow"></i>
+            </button>
+            <div class="text-filed-btn-div">
+              <textarea type="text" id="input-text-field-id" class="input-text-field"></textarea>
+              <button id="add-text-btn" class="add-text-func-btn">Добавить</button>
+            </div>
+          </div>
+          <div class="drop-emoji-area">
+            <button id="emoji-drop-menu-btn" class="text-func-btn">Стикеры
+              <i class="arrow"></i>
+            </button>
+            <div class="emoji-block-div">
+            </div>
+          </div>
+          <div class="drop-figure-area">
+            <button id="figure-drop-menu-btn" class="text-func-btn">Фигуры
+              <i class="arrow"></i>
+            </button>
+            <div class="figure-block-div">
+            </div>
+          </div>
         </div>
       </div>
       <aside class="editor-menu">
@@ -83,22 +152,6 @@
           <label for="ai-tools" class="menu-btn-label">AI-tools</label>
         </button>
       </aside>
-      <div>
-        <button id="ratio" class="crop-btn">ratio</button>
-        <button id="make-crop" class="crop-btn">make-crop</button>
-        <button id="rotate" class="crop-btn">rotate</button>
-        <button id="btn-rotate-plus90" class="crop-btn">Повернуть на 45</button>
-        <button id="btn-rotate-minus90" class="crop-btn">Повернуть на -45</button>
-        <button id="mirror" class="crop-btn">mirror</button>
-        <button id="flip" class="crop-btn">flip</button>
-        <button id="crop-reset-btn" class="crop-btn">crop-reset</button>
-      </div>
-      <div>
-        <label for="resize-width-input">width</label>
-        <label for="resize-height-input">height</label>
-        <input type="number" class="resize-input" id="resize-width-input">
-        <input type="number" class="resize-input" id="resize-height-input">
-      </div>
     </main>
   </div>
   <script defer src="node_modules/cropperjs/dist/cropper.js"></script>
