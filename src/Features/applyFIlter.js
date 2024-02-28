@@ -5,7 +5,7 @@ export function applyFilter(indexFilter, fabricCanvas) {
   let filterValue = Number(mapFilter.get(indexFilter).value);
   switch (indexFilter) {
     case "brightness":
-      filterSetting.brightness = filterValue / 500.0;
+      filterSetting.brightness = filterValue / 400.0;
       break;
     case "blur":
       filterSetting.blur = filterValue / 100.0;

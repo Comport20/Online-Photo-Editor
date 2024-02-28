@@ -334,6 +334,12 @@ document.addEventListener("keyup", (e) => {
 });
 const downloadImage = document.querySelector("#download-id");
 downloadImage.addEventListener("click", (e) => {
+  fabricCanvas.discardActiveObject();
+  let sel = new fabric.ActiveSelection(fabricCanvas.getObjects(), {
+    canvas: fabricCanvas,
+  });
+  fabricCanvas.setActiveObject(sel);
+  fabricCanvas.requestRenderAll();
   e.target.href = fabricCanvas.getActiveObject().toDataURL({
     withoutTransform: true,
   });
@@ -351,3 +357,14 @@ downloadImage.addEventListener("click", (e) => {
     "😻","😼","😽","🙀","😿","😾"],
     "hearts": ["🩷","🧡","💛","💚","💙","🩵","💜","🖤","🩶","🤍","🤎","❤️‍🔥","❤️‍🩹",
     "💔","💕","💞","💓","💗","💖","💘","💝"]}*/
+const aiTools = document.querySelector("#ai-tools");
+const suiteAiTools = document.querySelector("#id-suite-ai-tools");
+aiTools.addEventListener("click", () => {
+  suiteAiTools.classList.add("show");
+  aiTools.classList.add("hide");
+});
+const closeCross = document.querySelector("#close-cross-id");
+closeCross.addEventListener("click", () => {
+  suiteAiTools.classList.remove("show");
+  aiTools.classList.remove("hide");
+});
