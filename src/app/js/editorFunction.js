@@ -368,3 +368,10 @@ closeCross.addEventListener("click", () => {
   suiteAiTools.classList.remove("show");
   aiTools.classList.remove("hide");
 });
+const generateImage = document.querySelector("#generate-image-btn");
+const generateImageTextarea = document.querySelector(
+  "#generate-image-textarea"
+);
+generateImage.addEventListener("click", async () => {});
+const removeAiBtn = document.querySelector("#remove-ai-btn");
+removeAiBtn.addEventListener("click", async () => {});

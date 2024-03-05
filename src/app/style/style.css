@@ -210,7 +210,7 @@ input[type="range"]::-webkit-slider-runnable-track {
 }
 .ai-tools-side {
   margin-right: 10px;
-  width: 150px;
+  min-width: 150px;
   display: flex;
   flex-direction: column;
 }
@@ -371,6 +371,7 @@ input[type="range"]::-webkit-slider-runnable-track {
   visibility: hidden;
   display: flex;
   flex-direction: column;
+  transition: linear 0.3s;
 }
 .close-cross {
   font-size: 30px;
@@ -378,6 +379,11 @@ input[type="range"]::-webkit-slider-runnable-track {
   user-select: none;
 }
 .close-btn-block {
+  text-align: end;
+  transition: 0.3s;
+}
+.close-btn-block:hover {
+  background-color: rgba(255, 68, 68, 0.5);
   text-align: end;
 }
 .ai-btn {
@@ -393,6 +399,9 @@ input[type="range"]::-webkit-slider-runnable-track {
   padding: 3px;
   transform: rotate(45deg);
   transition: 0.3s;
+}
+#ai-tools {
+  transition: linear 0.3s;
 }
 .hide {
   visibility: hidden;

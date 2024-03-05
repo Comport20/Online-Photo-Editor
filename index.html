@@ -153,14 +153,20 @@
             <label for="ai-tools" class="menu-btn-label">AI-tools</label>
           </button>
           <div id="id-suite-ai-tools" class="suite-ai-tools">
-            <div class="close-btn-block">
-              <span id="close-cross-id" class="close-cross">&#10005;</span>
+            <div id="close-cross-id" class="close-btn-block">
+              <span class="close-cross">&#10005;</span>
             </div>
-            <button class="ai-btn">
-              Create image
-              <i class="ai-arrow"></i>
-            </button>
-            <button class="ai-btn">
+            <div class="create-image-block">
+              <button class="ai-btn">
+                Create image
+                <i class="ai-arrow"></i>
+              </button>
+              <div class="func-block-create-image">
+                <textarea id="generate-image-textarea" class="create-image-textarea"></textarea>
+                <input id="generate-image-btn" class="" type="button" value="Generate">
+              </div>
+            </div>
+            <button id="remove-ai-btn" class="ai-btn">
               Remove bc
               <i class="ai-arrow"></i>
             </button>
