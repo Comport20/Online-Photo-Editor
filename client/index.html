@@ -10,6 +10,8 @@
 </head>
 
 <body>
+  <div class="fix-image">
+  </div>
   <div id="app" class="app">
     <header class="header">
       <div class="left-side">
@@ -157,17 +159,27 @@
               <span class="close-cross">&#10005;</span>
             </div>
             <div class="create-image-block">
-              <button class="ai-btn">
-                Create image
-                <i class="ai-arrow"></i>
+              <button id="create-ai-btn" class="ai-btn">
+                <span>Create image</span>
+                <i id="ai-arrow-id" class="ai-arrow"></i>
               </button>
-              <div class="func-block-create-image">
+              <div id="func-block-create-image-id" class="func-block-create-image">
                 <textarea id="generate-image-textarea" class="create-image-textarea"></textarea>
-                <input id="generate-image-btn" class="" type="button" value="Generate">
+                <span class="textarea-side-bar"></span>
+                <input id="generate-image-btn" class="ai-submit-btn" type="button" value="Generate">
+                <div class="list-of-syle-side">
+                  <label for="list-of-syle">Style:</label>
+                  <select id="list-of-syle" class="select-style">
+                    <option value="3">Default</option>
+                    <option value="2">Anime</option>
+                    <option value="1">UHD</option>
+                    <option value="0">Kandinsky</option>
+                  </select>
+                </div>
               </div>
             </div>
             <button id="remove-ai-btn" class="ai-btn">
-              Remove bc
+              <span>Remove bc</span>
               <i class="ai-arrow"></i>
             </button>
           </div>

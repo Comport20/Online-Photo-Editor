@@ -33,17 +33,21 @@ domObjects.imageLoad.addEventListener("change", (e) => {
 });
 function initializeImage(loadImage) {
   let scale = imgScale(loadImage.width, loadImage.height);
-  fabric.Image.fromURL(loadImage.src, function (img) {
-    activeObjectMap.set(img, backupImage.length);
-    backupImage.push(loadImage);
-    img.scale(scale);
-    fabricCanvas.centerObject(img);
-    fabricCanvas.add(img);
-    fabricCanvas.setActiveObject(img);
+  let imagePromise = new Promise((resolve, reject) => {
+    const loadImageToCanvas = fabric.Image.fromURL(
+      loadImage.src,
+      function (img) {
+        activeObjectMap.set(img, backupImage.length);
+        backupImage.push(loadImage);
+        img.scale(scale);
+        fabricCanvas.centerObject(img);
+        fabricCanvas.add(img);
+        fabricCanvas.setActiveObject(img);
+      }
+    );
+    resolve(loadImageToCanvas);
   });
-  setTimeout(function () {
-    pushFilter(fabricCanvas.getActiveObject());
-  }, 500);
+  imagePromise.then((resolve) => pushFilter(resolve.getActiveObject()));
 }
 function pushFilter(obj) {
   for (const [key, value] of mapFilter) {
@@ -372,6 +376,42 @@ const generateImage = document.querySelector("#generate-image-btn");
 const generateImageTextarea = document.querySelector(
   "#generate-image-textarea"
 );
-generateImage.addEventListener("click", async () => {});
+generateImage.addEventListener("click", async () => {
+  const url = "http://127.0.0.1:8000/ai/generate/model";
+  const imagePrompt = generateImageTextarea.value;
+  const requestBody = {
+    prompt: imagePrompt,
+  };
+  await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestBody),
+  })
+    .then((responseData) => responseData.json())
+    .then((data) => {
+      const generateImage = new Image();
+      const base64Value = data[0].image;
+      generateImage.src = `data:image/jpg;base64,${base64Value.replace(
+        /[\[\]']+/g,
+        ""
+      )}`;
+      return generateImage;
+    })
+    .then((generateImage) => initializeImage(generateImage));
+});
 const removeAiBtn = document.querySelector("#remove-ai-btn");
 removeAiBtn.addEventListener("click", async () => {});
+const createAiBtn = document.querySelector("#create-ai-btn");
+const aiArrow = document.querySelector("#ai-arrow-id");
+
+const funcBlockCreateImage = document.querySelector(
+  "#func-block-create-image-id"
+);
+const createImageBlock = document.querySelector(".create-image-block");
+createAiBtn.addEventListener("click", (e) => {
+  aiArrow.classList.toggle("up");
+  createImageBlock.classList.toggle("increased-height");
+  funcBlockCreateImage.classList.toggle("show");
+});
