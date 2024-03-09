@@ -33,21 +33,15 @@ domObjects.imageLoad.addEventListener("change", (e) => {
 });
 function initializeImage(loadImage) {
   let scale = imgScale(loadImage.width, loadImage.height);
-  let imagePromise = new Promise((resolve, reject) => {
-    const loadImageToCanvas = fabric.Image.fromURL(
-      loadImage.src,
-      function (img) {
-        activeObjectMap.set(img, backupImage.length);
-        backupImage.push(loadImage);
-        img.scale(scale);
-        fabricCanvas.centerObject(img);
-        fabricCanvas.add(img);
-        fabricCanvas.setActiveObject(img);
-      }
-    );
-    resolve(loadImageToCanvas);
+  fabric.Image.fromURL(loadImage.src, async function (img) {
+    activeObjectMap.set(img, backupImage.length);
+    backupImage.push(loadImage);
+    img.scale(scale);
+    fabricCanvas.centerObject(img);
+    fabricCanvas.add(img);
+    fabricCanvas.setActiveObject(img);
+    pushFilter(fabricCanvas.getActiveObject());
   });
-  imagePromise.then((resolve) => pushFilter(resolve.getActiveObject()));
 }
 function pushFilter(obj) {
   for (const [key, value] of mapFilter) {
@@ -144,7 +138,6 @@ function convertFabricToCropper() {
   domObjects.img.src = obj.toDataURL({
     withoutTransform: true,
   });
-  console.log(domObjects.img.naturalWidth, domObjects.img.naturalHeight);
   fabricCanvas.remove(obj);
   fabricCanvas.renderAll();
   converterFlag = false;
@@ -159,8 +152,9 @@ function convertCropperToFabric() {
   converterFlag = true;
   initializeImage(domObjects.img);
   domObjects.img.src = "";
-  cropper = null;
+  if (cropper) cropper = null;
 }
+let cropper;
 let converterFlag = true;
 let backupCropImage;
 domObjects.transform.addEventListener("click", () => {
@@ -170,7 +164,7 @@ domObjects.transform.addEventListener("click", () => {
     convertFabricToCropper();
     backupCropImage = domObjects.img.src;
   }
-  let cropper = new Cropper(domObjects.img, {
+  cropper = new Cropper(domObjects.img, {
     aspectRatio: 0,
     viewMode: 2,
     autoCropArea: 1,
@@ -313,7 +307,7 @@ addTextBtn.addEventListener("click", () => {
   const textField = document.querySelector("#input-text-field-id");
   fabricText = new fabric.Text(textField.value, {});
   fabricCanvas.centerObject(fabricText);
-  fabricCanvas.add(fabricText);
+  fabricCanvas.insertAt(fabricText, 3, false);
 });
 textDropMenu.addEventListener("click", () => {
   textArea.classList.toggle("show");
