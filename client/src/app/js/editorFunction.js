@@ -376,13 +376,14 @@ const generateImage = document.querySelector("#generate-image-btn");
 const generateImageTextarea = document.querySelector(
   "#generate-image-textarea"
 );
-generateImage.addEventListener("click", async () => {
+const styleList = document.querySelector("#style-list");
+generateImage.addEventListener("click", () => {
   const url = "http://127.0.0.1:8000/ai/generate/model";
-  const imagePrompt = generateImageTextarea.value;
   const requestBody = {
-    prompt: imagePrompt,
+    prompt: generateImageTextarea.value,
+    style: styleList.value,
   };
-  await fetch(url, {
+  fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
