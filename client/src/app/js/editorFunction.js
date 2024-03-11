@@ -388,7 +388,7 @@ generateImage.addEventListener("click", () => {
     .then((data) => {
       const generateImage = new Image();
       const base64Value = data[0].image;
-      generateImage.src = `data:image/jpg;base64,${base64Value.replace(
+      generateImage.src = `data:image/png;base64,${base64Value.replace(
         /[\[\]']+/g,
         ""
       )}`;
@@ -397,7 +397,39 @@ generateImage.addEventListener("click", () => {
     .then((generateImage) => initializeImage(generateImage));
 });
 const removeAiBtn = document.querySelector("#remove-ai-btn");
-removeAiBtn.addEventListener("click", async () => {});
+removeAiBtn.addEventListener("click", async () => {
+  const removeBgImage = fabricCanvas
+    .getActiveObject()
+    .toDataURL({
+      withoutTransform: true,
+    })
+    .replace(/^data:image\/[a-z]+;base64,/, "");
+  const url = "http://localhost:8000/ai/remove/bg";
+  let json = { base64: removeBgImage };
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(json),
+  })
+    .then((res) => res.blob())
+    .then((imageData) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(imageData);
+      return fileReader;
+    })
+    .then((srcBase64) => {
+      const imageWithoutBg = new Image();
+      srcBase64.onload = () => {
+        imageWithoutBg.src = srcBase64.result;
+      };
+      imageWithoutBg.onload = () => {
+        initializeImage(imageWithoutBg);
+      };
+    })
+    .catch((rej) => alert(rej));
+});
 const createAiBtn = document.querySelector("#create-ai-btn");
 const aiArrow = document.querySelector("#ai-arrow-id");
 
