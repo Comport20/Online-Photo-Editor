@@ -392,9 +392,10 @@ generateImage.addEventListener("click", () => {
         /[\[\]']+/g,
         ""
       )}`;
-      return generateImage;
-    })
-    .then((generateImage) => initializeImage(generateImage));
+      generateImage.onload = () => {
+        initializeImage(generateImage);
+      };
+    });
 });
 const removeAiBtn = document.querySelector("#remove-ai-btn");
 removeAiBtn.addEventListener("click", async () => {
@@ -405,7 +406,11 @@ removeAiBtn.addEventListener("click", async () => {
     })
     .replace(/^data:image\/[a-z]+;base64,/, "");
   const url = "http://localhost:8000/ai/remove/bg";
-  let json = { base64: removeBgImage };
+  const json = { base64: removeBgImage, uid: generateUid() };
+  console.log(json);
+  removeBgPost(url, json);
+});
+function removeBgPost(url, json) {
   fetch(url, {
     method: "POST",
     headers: {
@@ -429,7 +434,10 @@ removeAiBtn.addEventListener("click", async () => {
       };
     })
     .catch((rej) => alert(rej));
-});
+}
+function generateUid() {
+  return Math.floor(Math.random() * 10000) + new Date().getTime() + "";
+}
 const createAiBtn = document.querySelector("#create-ai-btn");
 const aiArrow = document.querySelector("#ai-arrow-id");
 
