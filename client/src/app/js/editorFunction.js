@@ -152,7 +152,7 @@ function convertCropperToFabric() {
   converterFlag = true;
   initializeImage(domObjects.img);
   domObjects.img.src = "";
-  if (cropper) cropper = null;
+  if (cropper) cropper.destroy();
 }
 let cropper;
 let converterFlag = true;

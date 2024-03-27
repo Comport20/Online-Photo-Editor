@@ -20,11 +20,12 @@ def generate_model(generate_request: RequestImageModel):
     model_id = api.get_model()
     uuid = api.generate(generate_request.prompt, model_id, generate_request.style)
     images = api.check_generation(uuid)
+    print()
     return [
         {"prompt": f"{generate_request.prompt}", "style": f"{generate_request.style}", "image": f"{images}"}]
 
 
-@router.post("/ai/remove/bg",
+@router.post("/ai/remove/bg/",
              responses={
                  200: {
                      "content": {"image/png": {}}
