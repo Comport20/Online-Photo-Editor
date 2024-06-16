@@ -344,13 +344,16 @@ canvasContainer.addEventListener("mouseover", (event) => {
 canvasContainer.addEventListener("mouseout", (event) => {
   handler(event);
 });
+const deletePhoto = () => {
+  let backspaceKeyPressed = fabricCanvas.getActiveObject();
+  fabricCanvas.remove(backspaceKeyPressed);
+  fabricCanvas.renderAll();
+};
 document.addEventListener("keyup", (e) => {
   try {
     if (canvasMouse) {
       if (e.code === "Backspace") {
-        let backspaceKeyPressed = fabricCanvas.getActiveObject();
-        fabricCanvas.remove(backspaceKeyPressed);
-        fabricCanvas.renderAll();
+        deletePhoto();
       }
     }
   } catch (err) {
@@ -476,6 +479,7 @@ function postHandlerRemoveBg(url, json) {
         imageWithoutBg.src = srcBase64.result;
       };
       imageWithoutBg.onload = () => {
+        deletePhoto();
         initializeImage(imageWithoutBg);
       };
     })
