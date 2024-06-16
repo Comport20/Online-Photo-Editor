@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru">
 
 <head>
   <meta charset="UTF-8" />
@@ -17,29 +17,29 @@
       <div class="left-side">
         <img src="src/assets/icon/Main-logo.svg" alt="logo">
       </div>
-      <div class="right-side">
+      <!-- <div class="right-side">
         <p class="right-side-p">Sign in</p>
         <img src="src/assets/icon/account.svg" alt="account">
-      </div>
+      </div> -->
     </header>
     <main class="main-bar">
       <div class="canvas-area">
         <div class="canvas-interaction">
           <div class="flex-left-side-canvas-nav">
-            <label id="file-id" class="canvas-interaction-button">File</label>
-            <label class="canvas-interaction-button" for="load-input">Load</label>
+            <label id="file-id" class="canvas-interaction-button">Файл</label>
+            <label class="canvas-interaction-button" for="load-input">Загрузить</label>
             <input class="input-load" type="file" id="load-input" accept="image/*" hi>
-            <a id="download-id" class="canvas-interaction-button">Save</a>
+            <a id="download-id" class="canvas-interaction-button">Сохранить</a>
           </div>
           <div class="flex-middle-side-canvas-nav">
-            <button id="back-id" class="canvas-interaction-button-svg back"></button>
-            <button id="next-id" class="canvas-interaction-button-svg next"></button>
-            <button id="list-of-changes" class="canvas-interaction-button-svg list-of-changes"></button>
+            <button id="back-id" class="canvas-interaction-button-svg back" title="back"></button>
+            <button id="next-id" class="canvas-interaction-button-svg next" title="next"></button>
+            <button id="list-of-changes" class="canvas-interaction-button-svg list-of-changes" title="list"></button>
           </div>
           <div class="flex-right-side-canvas-nav">
-            <label id="traget-rest-id" class="canvas-interaction-button traget-rest">Reset</label>
+            <label id="traget-rest-id" class="canvas-interaction-button traget-rest">Сброс</label>
             <label id="reset-all-id" class="canvas-interaction-button traget-rest" value="label">
-              <span>Reset all</span>
+              <span>Сброс все</span>
             </label>
           </div>
         </div>
@@ -48,8 +48,8 @@
         </div>
         <canvas id="canvas-id" class="canvas-style" width="774px" height="439px"></canvas>
         <div class="slider-area">
-          <input type="number" class="range-value-display">
-          <input class="slider" type="range" value="0" max="100" min="-100">
+          <input type="number" class="range-value-display" aria-label="number of property">
+          <input class="slider" type="range" value="0" max="100" min="-100" aria-label="slider">
         </div>
         <div class="resize-button deactivate">
           <label for="resize-width-input">W:</label>
@@ -58,53 +58,53 @@
           <input type="number" class="resize-input" id="resize-height-input">
         </div>
         <div class="filter-button deactivate">
-          <button id="0" class="Filter-button" name="brightness">brightness</button>
-          <button id="1" class="Filter-button" name="blur">blur</button>
-          <button id="2" class="Filter-button" name="contrast">contrast</button>
-          <button id="3" class="Filter-button" name="pixelate">pixelate</button>
-          <button id="4" class="Filter-button" name="vibrance">vibrance</button>
-          <button id="5" class="Filter-button" name="opacity">opacity</button>
-          <button id="6" class="Filter-button" name="saturation">saturate</button>
-          <button id="7" class="Filter-button" name="noise">noise</button>
-          <button id="reset-id" class="Filter-button reset-filter-btn">reset filter</button>
+          <button id="0" class="Filter-button" name="brightness">Яркость</button>
+          <button id="1" class="Filter-button" name="blur">Размытие</button>
+          <button id="2" class="Filter-button" name="contrast">Контраст</button>
+          <button id="3" class="Filter-button" name="pixelate">Пикселизация</button>
+          <button id="4" class="Filter-button" name="vibrance">Сочность</button>
+          <button id="5" class="Filter-button" name="opacity">Прозрачность</button>
+          <button id="6" class="Filter-button" name="saturation">Насыщеность</button>
+          <button id="7" class="Filter-button" name="noise">Шум</button>
+          <button id="reset-id" class="Filter-button reset-filter-btn">Сброс фильтров</button>
         </div>
         <div class="cropper-button deactivate">
-          <button id="ratio" class="crop-btn">ratio</button>
-          <button id="make-crop" class="crop-btn">make-crop</button>
-          <button id="rotate" class="crop-btn">rotate</button>
+          <button id="ratio" class="crop-btn">Сжатие</button>
+          <button id="make-crop" class="crop-btn">Обрезать</button>
+          <button id="rotate" class="crop-btn">Поворот</button>
           <button id="btn-rotate-plus90" class="crop-btn">Повернуть на 45</button>
           <button id="btn-rotate-minus90" class="crop-btn">Повернуть на -45</button>
-          <button id="mirror" class="crop-btn">mirror</button>
-          <button id="flip" class="crop-btn">flip</button>
-          <button id="crop-reset-btn" class="crop-btn">crop-reset</button>
+          <button id="mirror" class="crop-btn">Отрозить</button>
+          <button id="flip" class="crop-btn">Перевернуть</button>
+          <button id="crop-reset-btn" class="crop-btn">Сброс</button>
         </div>
         <div class="preset-filter-div deactivate">
           <input data-filter-name="Grayscale" id="grayscale" type="checkbox" class="preset-filter-btn">
-          <label for="grayscale" class="preset-filter-label">grayscale</label>
+          <label for="grayscale" class="preset-filter-label">Оттенки серого</label>
 
           <input data-filter-name="Invert" id="invert" type="checkbox" class="preset-filter-btn">
-          <label for="invert" class="preset-filter-label">Invert</label>
+          <label for="invert" class="preset-filter-label">Инвертировать</label>
 
           <input data-filter-name="Sepia" id="sepia" type="checkbox" class="preset-filter-btn">
-          <label for="sepia" class="preset-filter-label">sepia</label>
+          <label for="sepia" class="preset-filter-label">Сепия</label>
 
           <input data-filter-name="BlackWhite" id="black-and-white" type="checkbox" class="preset-filter-btn">
-          <label for="black-and-white" class="preset-filter-label">black and white</label>
+          <label for="black-and-white" class="preset-filter-label">Черно-белый</label>
 
           <input data-filter-name="Brownie" id="brownie" type="checkbox" class="preset-filter-btn">
-          <label for="brownie" class="preset-filter-label">brownie</label>
+          <label for="brownie" class="preset-filter-label">Шоколадный</label>
 
           <input data-filter-name="Kodachrome" id="kodachrome" type="checkbox" class="preset-filter-btn">
-          <label for="kodachrome" class="preset-filter-label">kodachrome</label>
+          <label for="kodachrome" class="preset-filter-label">Кодахром</label>
 
           <input data-filter-name="Vintage" id="vintage" type="checkbox" class="preset-filter-btn">
-          <label for="vintage" class="preset-filter-label">vintage</label>
+          <label for="vintage" class="preset-filter-label">Винтаж</label>
 
           <input data-filter-name="Technicolor" id="technicolor" type="checkbox" class="preset-filter-btn">
-          <label for="technicolor" class="preset-filter-label">Technicolor</label>
+          <label for="technicolor" class="preset-filter-label">Техниколор</label>
 
           <input data-filter-name="Polaroid" id="polaroid" type="checkbox" class="preset-filter-btn">
-          <label for="polaroid" class="preset-filter-label">Polaroid</label>
+          <label for="polaroid" class="preset-filter-label">Полароид </label>
         </div>
         <div class="text-func-div deactivate">
           <div class="drop-text-area">
@@ -134,25 +134,25 @@
       </div>
       <aside class="editor-menu">
         <button id="transform" class="menu-btn transform">
-          <label for="transform" class="menu-btn-label">Transform</label>
+          <label for="transform" class="menu-btn-label">Трансформация</label>
         </button>
         <button id="fine-tuning" class="menu-btn fine-tuning">
-          <label for="fine-tuning" class="menu-btn-label">Fine-tuning</label>
+          <label for="fine-tuning" class="menu-btn-label">Коррекция</label>
         </button>
         <button id="filter" class="menu-btn filter">
-          <label for="filter" class="menu-btn-label">Filter</label>
+          <label for="filter" class="menu-btn-label">Фильтры</label>
         </button>
         <button id="text" class="menu-btn text">
-          <label for="text" class="menu-btn-label">Text</label>
+          <label for="text" class="menu-btn-label">Текст</label>
         </button>
         <button id="resize" class="menu-btn resize">
-          <label for="resize" class="menu-btn-label">Resize</label>
+          <label for="resize" class="menu-btn-label">Масштабировать</label>
         </button>
       </aside>
       <aside class="ai-tools-side">
         <div class="ai-tools-bar">
           <button id="ai-tools" class="menu-btn ai-tools">
-            <label for="ai-tools" class="menu-btn-label">AI-tools</label>
+            <label for="ai-tools" class="menu-btn-label">AI инструменты</label>
           </button>
           <div id="id-suite-ai-tools" class="suite-ai-tools">
             <div id="close-cross-id" class="close-btn-block">
@@ -160,17 +160,17 @@
             </div>
             <div class="create-image-block">
               <button id="create-ai-btn" class="ai-btn">
-                <span>Create image</span>
+                <span>Сгенерировать изображение</span>
                 <i id="ai-arrow-id" class="ai-arrow"></i>
               </button>
               <div id="func-block-create-image-id" class="func-block-create-image">
                 <div class="generate-image-box">
                   <textarea id="generate-image-textarea" class="create-image-textarea"></textarea>
                   <span class="textarea-side-bar"></span>
-                  <input id="generate-image-btn" class="ai-submit-btn" type="button" value="Generate">
+                  <input id="generate-image-btn" class="ai-submit-btn" type="button" value="Сгенерировать">
                 </div>
                 <div class="list-of-syle-side">
-                  <label for="style-list">Style:</label>
+                  <label for="style-list">Стиль:</label>
                   <select id="style-list" class="select-style">
                     <option value="3">Default</option>
                     <option value="2">Anime</option>
@@ -181,8 +181,7 @@
               </div>
             </div>
             <button id="remove-ai-btn" class="ai-btn">
-              <span>Remove bc</span>
-              <i class="ai-arrow"></i>
+              <span>Удалить фон</span>
             </button>
           </div>
         </div>

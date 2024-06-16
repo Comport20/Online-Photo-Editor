@@ -10,6 +10,7 @@ import {
   toggleFlagVisibleSlider,
   toggleFlagHiddenSlider,
 } from "../../Features/toggleFlag.js";
+import { activeFiled } from "../../Features/activeBtn.js";
 const divScroll = document.querySelector(".filter-button");
 divScroll.addEventListener("wheel", (e) => {
   e.preventDefault();
@@ -79,15 +80,18 @@ domObjects.brightness.addEventListener("click", () => {
   let filterName = domObjects.brightness.name;
   sliderRangeMinus100toPlus100(filterName);
   changer = filterChanger(filterName);
+  activeFiled(domObjects.brightness);
 });
 domObjects.blurFilter.addEventListener("click", () => {
   sliderRangeZerotoPlus100("blur");
   changer = filterChanger("blur");
+  activeFiled(domObjects.blurFilter);
 });
 domObjects.contrast.addEventListener("click", () => {
   let filterName = domObjects.contrast.name;
   sliderRangeMinus100toPlus100(filterName);
   changer = filterChanger(filterName);
+  activeFiled(domObjects.contrast);
 });
 domObjects.pixelate.addEventListener("click", () => {
   let filterName = domObjects.pixelate.name;
@@ -96,26 +100,31 @@ domObjects.pixelate.addEventListener("click", () => {
   domObjects.slider.value = mapFilter.get(filterName).value;
   domObjects.rangeValueDisplay.value = domObjects.slider.value;
   changer = filterChanger(filterName);
+  activeFiled(domObjects.pixelate);
 });
 domObjects.vibrance.addEventListener("click", () => {
   let filterName = domObjects.vibrance.name;
   sliderRangeMinus100toPlus100(filterName);
   changer = filterChanger(filterName);
+  activeFiled(domObjects.vibrance);
 });
 domObjects.opacity.addEventListener("click", () => {
   let filterName = domObjects.opacity.name;
   sliderRangeZerotoPlus100(filterName);
   changer = filterChanger(filterName);
+  activeFiled(domObjects.opacity);
 });
 domObjects.saturate.addEventListener("click", () => {
   let filterName = domObjects.saturate.name;
   sliderRangeMinus100toPlus100(filterName);
   changer = filterChanger(filterName);
+  activeFiled(domObjects.saturate);
 });
 domObjects.noise.addEventListener("click", () => {
   let filterName = domObjects.noise.name;
   sliderRangeZerotoPlus100(filterName);
   changer = filterChanger(filterName);
+  activeFiled(domObjects.noise);
 });
 const filterChanger = (str) => str;
 domObjects.resetBtnFilter.addEventListener("click", () => {
@@ -273,24 +282,24 @@ const presetFilters = document.querySelectorAll(".preset-filter-btn");
 let arrayValue = new Map();
 for (const elem of presetFilters) {
   elem.addEventListener("change", (e) => {
-    let activObj = fabricCanvas.getActiveObject();
+    let activeObj = fabricCanvas.getActiveObject();
     if (e.target.checked) {
-      let filterCreater = new Function(
+      let filterCreator = new Function(
         `return new fabric.Image.filters.${e.target.dataset.filterName}();`
       );
-      let filtersSetting = filterCreater();
+      let filtersSetting = filterCreator();
       if (arrayValue.has(e.target.dataset.filterName)) {
-        activObj.filters[arrayValue.get(e.target.dataset.filterName)] =
+        activeObj.filters[arrayValue.get(e.target.dataset.filterName)] =
           filtersSetting;
       } else {
         arrayValue.set(e.target.dataset.filterName, counter);
-        activObj.filters[counter++] = filtersSetting;
+        activeObj.filters[counter++] = filtersSetting;
       }
-      activObj.applyFilters();
+      activeObj.applyFilters();
       fabricCanvas.renderAll();
     } else {
-      activObj.filters.splice(arrayValue.get(e.target.dataset.filterName), 1);
-      activObj.applyFilters();
+      activeObj.filters.splice(arrayValue.get(e.target.dataset.filterName), 1);
+      activeObj.applyFilters();
       fabricCanvas.renderAll();
     }
   });
@@ -319,15 +328,53 @@ emojiDropMenu.addEventListener("click", () => {
 figureDropMenu.addEventListener("click", () => {
   arrowCursor[2].classList.toggle("up");
 });
+let canvasMouse = true;
+function handler(event) {
+  if (event.type == "mouseout") {
+    canvasMouse = false;
+  }
+  if (event.type == "mouseover") {
+    canvasMouse = true;
+  }
+}
+const canvasContainer = document.querySelector(".canvas-container");
+canvasContainer.addEventListener("mouseover", (event) => {
+  handler(event);
+});
+canvasContainer.addEventListener("mouseout", (event) => {
+  handler(event);
+});
 document.addEventListener("keyup", (e) => {
   try {
-    if (e.code === "Backspace") {
-      let backspaceKeyPressed = fabricCanvas.getActiveObject();
-      fabricCanvas.remove(backspaceKeyPressed);
-      fabricCanvas.renderAll();
+    if (canvasMouse) {
+      if (e.code === "Backspace") {
+        let backspaceKeyPressed = fabricCanvas.getActiveObject();
+        fabricCanvas.remove(backspaceKeyPressed);
+        fabricCanvas.renderAll();
+      }
     }
   } catch (err) {
     console.log(err);
+  }
+});
+document.addEventListener("paste", (event) => {
+  if (canvasMouse) {
+    let items = (event.clipboardData || event.originalEvent.clipboardData)
+      .items;
+    console.log(JSON.stringify(items)); // will give you the mime types
+    for (let index in items) {
+      let item = items[index];
+      if (item.kind === "file") {
+        let blob = item.getAsFile();
+        let reader = new FileReader();
+        reader.onload = function (event) {
+          const image = new Image();
+          image.src = event.target.result;
+          initializeImage(image);
+        };
+        reader.readAsDataURL(blob);
+      }
+    }
   }
 });
 const downloadImage = document.querySelector("#download-id");
@@ -377,13 +424,8 @@ generateImage.addEventListener("click", () => {
     prompt: generateImageTextarea.value,
     style: styleList.value,
   };
-  fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestBody),
-  })
+  const response = generateImagePost(url, requestBody);
+  response
     .then((responseData) => responseData.json())
     .then((data) => {
       const generateImage = new Image();
@@ -397,6 +439,15 @@ generateImage.addEventListener("click", () => {
       };
     });
 });
+function generateImagePost(url, requestBody) {
+  return fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestBody),
+  });
+}
 const removeAiBtn = document.querySelector("#remove-ai-btn");
 removeAiBtn.addEventListener("click", async () => {
   const removeBgImage = fabricCanvas
@@ -408,16 +459,11 @@ removeAiBtn.addEventListener("click", async () => {
   const url = "http://localhost:8000/ai/remove/bg";
   const json = { base64: removeBgImage, uid: generateUid() };
   console.log(json);
-  removeBgPost(url, json);
+  postHandlerRemoveBg(url, json);
 });
-function removeBgPost(url, json) {
-  fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(json),
-  })
+function postHandlerRemoveBg(url, json) {
+  const response = removeBgPost(url, json);
+  response
     .then((res) => res.blob())
     .then((imageData) => {
       const fileReader = new FileReader();
@@ -435,6 +481,15 @@ function removeBgPost(url, json) {
     })
     .catch((rej) => alert(rej));
 }
+function removeBgPost(url, json) {
+  return fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(json),
+  });
+}
 function generateUid() {
   return Math.floor(Math.random() * 10000) + new Date().getTime() + "";
 }
@@ -450,3 +505,6 @@ createAiBtn.addEventListener("click", (e) => {
   createImageBlock.classList.toggle("increased-height");
   funcBlockCreateImage.classList.toggle("show");
 });
+export default fabricCanvas;
+export { removeBgPost };
+export { generateImagePost };
