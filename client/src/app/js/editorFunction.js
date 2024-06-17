@@ -132,6 +132,12 @@ domObjects.resetBtnFilter.addEventListener("click", () => {
   resetMapFilter(obj);
   fabricCanvas.renderAll();
 });
+const resetBtnSideMenu = document.querySelector("#traget-rest-id");
+resetBtnSideMenu.addEventListener("click", () => {
+  let obj = fabricCanvas.getActiveObject();
+  resetMapFilter(obj);
+  fabricCanvas.renderAll();
+});
 domObjects.ratio.addEventListener("click", () => {
   const cropper = new Cropper(domObjects.img, {
     aspectRatio: 5 / 4,
@@ -167,7 +173,7 @@ let cropper;
 let converterFlag = true;
 let backupCropImage;
 domObjects.transform.addEventListener("click", () => {
-  toggleFlagVisibleSlider(sliderArea, cropperButtons, "cropper-button");
+  toggleFlagHiddenSlider(sliderArea, cropperButtons, "cropper-button");
   scrollToNewItem(cropperButtons);
   if (converterFlag) {
     convertFabricToCropper();
